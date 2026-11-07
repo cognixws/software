@@ -1,0 +1,53 @@
+name: publish
+
+# A merge to main signs catalog.json and publishes it as the next release:
+# software-index.json (payload + Ed25519 signature) and the catalog it signs.
+# The private key is SOFTWARE_INDEX_KEY, a secret of the "index-signing"
+# environment, which only main may use. Only the sign step reads it.
+
+on:
+  push:
+    branches: [main]
+    paths: ["catalog.json", "scripts/**", "keys/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    uses: ./.github/workflows/validate.yml
+    permissions:
+      contents: read
+
+  publish:
+    needs: validate
+    runs-on: ubuntu-24.04
+    environment: index-signing
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Next serial
+        id: serial
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          last=$(gh release list -R "$GITHUB_REPOSITORY" --limit 1000 --json tagName \
+            --jq '[.[].tagName | select(test("^v[0-9]+$")) | ltrimstr("v") | tonumber] | max // 0')
+          echo "serial=$((last + 1))" >> "$GITHUB_OUTPUT"
+      - name: Sign
+        env:
+          SOFTWARE_INDEX_KEY: ${{ secrets.SOFTWARE_INDEX_KEY }}
+        run: node scripts/sign.mjs --serial "${{ steps.serial.outputs.serial }}" --out software-index.json
+      - name: Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SERIAL: ${{ steps.serial.outputs.serial }}
+        run: |
+          gh release create "v$SERIAL" software-index.json catalog.json \
+            -R "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --latest \
+            --title "Catalog $SERIAL" \
+            --notes "Signed index of catalog.json at $GITHUB_SHA. The signature verifies with keys/index.pub."

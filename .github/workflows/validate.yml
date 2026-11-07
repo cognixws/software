@@ -1,0 +1,35 @@
+name: validate
+
+# Every pull request and every push: the schema COGNIX[WS] enforces, each
+# entry's official source, and each apt package on Ubuntu 24.04 and Debian 12.
+# publish.yml runs this same workflow before it signs.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  schema-and-sources:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: node --test scripts/validate.test.mjs
+      - run: node scripts/validate.mjs --online
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  apt-packages:
+    strategy:
+      matrix:
+        image: ["ubuntu:24.04", "debian:12"]
+    runs-on: ubuntu-24.04
+    container: ${{ matrix.image }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq nodejs >/dev/null
+      - run: node scripts/validate.mjs --apt

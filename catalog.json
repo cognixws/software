@@ -1,0 +1,331 @@
+{
+  "version": 1,
+  "entries": [
+    {
+      "id": "pi", "name": "Pi", "category": "agent-clis",
+      "summary": "A minimal terminal coding agent you can extend.",
+      "publisher": { "name": "Earendil Works", "url": "https://github.com/earendil-works" },
+      "homepage": "https://pi.dev", "license": "MIT",
+      "keywords": ["pi", "agent", "coding agent"],
+      "detect": { "command": "pi", "version": ["pi", "--version"] },
+      "platforms": { "wsl": { "driver": "cli" } },
+      "dependsOn": ["nodejs"], "signIn": "gui", "updates": "driver"
+    },
+    {
+      "id": "claude-code", "name": "Claude Code", "category": "agent-clis",
+      "summary": "Anthropic's agentic coding tool in your terminal.",
+      "publisher": { "name": "Anthropic", "url": "https://www.anthropic.com" },
+      "homepage": "https://code.claude.com/docs/en/setup", "license": "Proprietary",
+      "keywords": ["claude", "anthropic", "agent", "coding agent"],
+      "detect": { "command": "claude", "version": ["claude", "--version"] },
+      "platforms": { "wsl": { "driver": "cli" } },
+      "dependsOn": ["nodejs"], "signIn": "gui", "updates": "driver"
+    },
+    {
+      "id": "codex", "name": "Codex", "category": "agent-clis",
+      "summary": "OpenAI's coding agent that runs in your terminal.",
+      "publisher": { "name": "OpenAI", "url": "https://openai.com" },
+      "homepage": "https://learn.chatgpt.com/docs/codex/cli", "license": "Apache-2.0",
+      "keywords": ["codex", "openai", "chatgpt", "agent", "coding agent"],
+      "detect": { "command": "codex", "version": ["codex", "--version"] },
+      "platforms": { "wsl": { "driver": "cli" } },
+      "dependsOn": ["nodejs"], "signIn": "gui", "updates": "driver"
+    },
+    {
+      "id": "grok", "name": "Grok", "category": "agent-clis",
+      "summary": "xAI's Grok as a coding agent in your terminal.",
+      "publisher": { "name": "xAI", "url": "https://x.ai" },
+      "homepage": "https://docs.x.ai/build/cli/reference", "license": "Proprietary",
+      "keywords": ["grok", "xai", "agent", "coding agent"],
+      "detect": { "command": "grok", "version": ["grok", "--version"] },
+      "platforms": { "wsl": { "driver": "cli" } },
+      "signIn": "gui", "updates": "driver"
+    },
+    {
+      "id": "opencode", "name": "OpenCode", "category": "agent-clis",
+      "summary": "An open source coding agent that works with many model providers.",
+      "publisher": { "name": "Anomaly", "url": "https://github.com/anomalyco" },
+      "homepage": "https://opencode.ai/docs", "license": "MIT",
+      "keywords": ["opencode", "anomaly", "sst", "agent", "coding agent"],
+      "detect": { "command": "opencode", "version": ["opencode", "--version"] },
+      "platforms": { "wsl": { "driver": "cli" } },
+      "dependsOn": ["nodejs"], "signIn": "gui", "updates": "driver"
+    },
+    {
+      "id": "muse", "name": "Muse Code", "category": "agent-clis",
+      "summary": "Meta's coding agent for the terminal.",
+      "publisher": { "name": "Meta", "url": "https://dev.meta.ai" },
+      "homepage": "https://dev.meta.ai/docs/muse-code", "license": "Proprietary",
+      "keywords": ["muse", "meta", "agent", "coding agent"],
+      "detect": { "command": "muse", "version": ["muse", "--version"] },
+      "platforms": { "wsl": { "driver": "cli" } },
+      "signIn": "gui", "updates": "driver"
+    },
+    {
+      "id": "agy", "name": "Antigravity", "category": "agent-clis",
+      "summary": "Google's Antigravity coding agent in your terminal.",
+      "publisher": { "name": "Google", "url": "https://antigravity.google" },
+      "homepage": "https://antigravity.google/docs/cli/", "license": "Proprietary",
+      "keywords": ["antigravity", "agy", "google", "gemini", "agent", "coding agent"],
+      "detect": { "command": "agy", "version": ["agy", "--version"] },
+      "platforms": { "wsl": { "driver": "cli" } },
+      "signIn": "gui", "updates": "driver"
+    },
+    {
+      "id": "omp", "name": "Omp", "category": "agent-clis",
+      "summary": "oh-my-pi, a Pi fork with batteries included.",
+      "publisher": { "name": "Stencil Labs", "url": "https://omp.sh" },
+      "homepage": "https://omp.sh/docs", "license": "MIT",
+      "keywords": ["omp", "oh-my-pi", "pi", "agent", "coding agent"],
+      "detect": { "command": "omp", "version": ["omp", "--version"] },
+      "platforms": { "wsl": { "driver": "cli" } },
+      "dependsOn": ["nodejs"], "signIn": "gui", "updates": "driver"
+    },
+
+    {
+      "id": "gh", "name": "GitHub CLI", "category": "git",
+      "summary": "Work with GitHub pull requests, issues and releases from the terminal.",
+      "publisher": { "name": "GitHub", "url": "https://github.com" },
+      "homepage": "https://cli.github.com", "license": "MIT",
+      "keywords": ["github", "gh", "git", "pull request", "issues"],
+      "detect": { "command": "gh", "version": ["gh", "--version"] },
+      "platforms": { "wsl": { "families": ["apt"], "driver": "apt", "account": "root",
+        "packages": ["gh"] } },
+      "signIn": "later", "updates": "driver"
+    },
+    {
+      "id": "docker", "name": "Docker Engine", "category": "containers",
+      "summary": "Run containers in your Linux environment.",
+      "publisher": { "name": "Docker Inc.", "url": "https://www.docker.com" },
+      "homepage": "https://docs.docker.com/engine/", "license": "Apache-2.0",
+      "keywords": ["docker", "compose", "buildx", "containers"],
+      "detect": { "command": "docker", "version": ["docker", "--version"] },
+      "platforms": { "wsl": { "families": ["apt"], "driver": "apt-repo", "account": "root",
+        "hosts": ["download.docker.com"],
+        "repo": { "url": "https://download.docker.com/linux/{base}", "suite": "{codename}", "components": "stable",
+                  "key": "https://download.docker.com/linux/{base}/gpg",
+                  "fingerprint": "9DC858229FC7DD38854AE2D88D81803C0EBFCD88" },
+        "packages": ["docker-ce", "docker-ce-cli", "containerd.io", "docker-buildx-plugin", "docker-compose-plugin"],
+        "conflicts": ["docker.io", "podman-docker"],
+        "after": ["docker-access"],
+        "remove": { "packages": ["docker-ce", "docker-ce-cli"], "keeps": "images and volumes" } } },
+      "grants": "Anyone who can use Docker gets full administrator control of this Linux environment.",
+      "signIn": "none", "updates": "driver"
+    },
+    {
+      "id": "tailscale", "name": "Tailscale", "category": "networking",
+      "summary": "Reach this computer from your other devices over a private network.",
+      "publisher": { "name": "Tailscale Inc.", "url": "https://tailscale.com" },
+      "homepage": "https://tailscale.com/kb/1031/install-linux", "license": "BSD-3-Clause",
+      "keywords": ["tailscale", "vpn", "wireguard", "network", "remote"],
+      "detect": { "command": "tailscale", "version": ["tailscale", "version"] },
+      "platforms": { "wsl": { "families": ["apt"], "driver": "apt-repo", "account": "root",
+        "hosts": ["pkgs.tailscale.com"],
+        "repo": { "url": "https://pkgs.tailscale.com/stable/{base}", "suite": "{codename}", "components": "main",
+                  "key": "https://pkgs.tailscale.com/stable/{base}/{codename}.noarmor.gpg",
+                  "fingerprint": "2596A99EAAB33821893C0A79458CA832957F5868" },
+        "packages": ["tailscale"] } },
+      "signIn": "later", "updates": "driver"
+    },
+    {
+      "id": "wrangler", "name": "Cloudflare Wrangler", "category": "cloud",
+      "summary": "Build and deploy Cloudflare Workers and Pages.",
+      "publisher": { "name": "Cloudflare", "url": "https://www.cloudflare.com" },
+      "homepage": "https://developers.cloudflare.com/workers/wrangler/", "license": "MIT OR Apache-2.0",
+      "keywords": ["cloudflare", "wrangler", "workers", "pages", "deploy"],
+      "detect": { "command": "wrangler", "version": ["wrangler", "--version"] },
+      "platforms": { "wsl": { "driver": "npm-global", "account": "user", "package": "wrangler",
+        "env": { "WRANGLER_SEND_METRICS": "false" } } },
+      "dependsOn": ["nodejs"], "signIn": "later", "updates": "driver"
+    },
+    {
+      "id": "vercel", "name": "Vercel CLI", "category": "cloud",
+      "summary": "Deploy and manage Vercel projects from the terminal.",
+      "publisher": { "name": "Vercel", "url": "https://vercel.com" },
+      "homepage": "https://vercel.com/docs/cli", "license": "Apache-2.0",
+      "keywords": ["vercel", "deploy", "hosting", "next.js"],
+      "detect": { "command": "vercel", "version": ["vercel", "--version"] },
+      "platforms": { "wsl": { "driver": "npm-global", "account": "user", "package": "vercel",
+        "env": { "VERCEL_TELEMETRY_DISABLED": "1" } } },
+      "dependsOn": ["nodejs"], "signIn": "later", "updates": "driver"
+    },
+    {
+      "id": "supabase", "name": "Supabase CLI", "category": "cloud",
+      "summary": "Develop and deploy Supabase projects from the terminal.",
+      "publisher": { "name": "Supabase", "url": "https://supabase.com" },
+      "homepage": "https://supabase.com/docs/guides/local-development/cli/getting-started", "license": "MIT",
+      "keywords": ["supabase", "postgres", "database", "deploy"],
+      "detect": { "command": "supabase", "version": ["supabase", "--version"] },
+      "platforms": { "wsl": { "driver": "github-release", "account": "user",
+        "hosts": ["api.github.com", "github.com", "objects.githubusercontent.com", "release-assets.githubusercontent.com"],
+        "release": { "repo": "supabase/cli", "asset": "supabase_{version}_linux_{arch}.tar.gz",
+                     "checksums": "checksums.txt", "binary": "supabase" } } },
+      "signIn": "later", "updates": "driver"
+    },
+    {
+      "id": "git-lfs", "name": "Git LFS", "category": "git",
+      "summary": "Keeps large files such as models, media and datasets out of the Git history.",
+      "publisher": { "name": "Git LFS", "url": "https://git-lfs.com" },
+      "homepage": "https://git-lfs.com", "license": "MIT",
+      "keywords": ["git", "lfs", "large files", "models", "datasets"],
+      "detect": { "command": "git-lfs", "version": ["git-lfs", "--version"] },
+      "platforms": { "wsl": { "families": ["apt"], "driver": "apt", "account": "root",
+        "packages": ["git-lfs"] } },
+      "signIn": "none", "updates": "driver"
+    },
+    {
+      "id": "ripgrep", "name": "ripgrep", "category": "dev-tools",
+      "summary": "Searches file contents fast and skips what .gitignore hides; agent CLIs use it to find code.",
+      "publisher": { "name": "Andrew Gallant", "url": "https://github.com/BurntSushi" },
+      "homepage": "https://github.com/BurntSushi/ripgrep", "license": "MIT OR Unlicense",
+      "keywords": ["rg", "grep", "search", "code search"],
+      "detect": { "command": "rg", "version": ["rg", "--version"] },
+      "platforms": { "wsl": { "families": ["apt"], "driver": "apt", "account": "root",
+        "packages": ["ripgrep"] } },
+      "signIn": "none", "updates": "driver"
+    },
+    {
+      "id": "jq", "name": "jq", "category": "dev-tools",
+      "summary": "Reads, filters and reshapes JSON on the command line.",
+      "publisher": { "name": "jqlang", "url": "https://jqlang.org" },
+      "homepage": "https://jqlang.org", "license": "MIT",
+      "keywords": ["json", "filter", "query"],
+      "detect": { "command": "jq", "version": ["jq", "--version"] },
+      "platforms": { "wsl": { "families": ["apt"], "driver": "apt", "account": "root",
+        "packages": ["jq"] } },
+      "signIn": "none", "updates": "driver"
+    },
+    {
+      "id": "sqlite3", "name": "SQLite", "category": "dev-tools",
+      "summary": "Opens and queries SQLite database files from the terminal.",
+      "publisher": { "name": "SQLite", "url": "https://sqlite.org" },
+      "homepage": "https://sqlite.org/cli.html", "license": "blessing",
+      "keywords": ["sqlite", "database", "sql"],
+      "detect": { "command": "sqlite3", "version": ["sqlite3", "--version"] },
+      "platforms": { "wsl": { "families": ["apt"], "driver": "apt", "account": "root",
+        "packages": ["sqlite3"] } },
+      "signIn": "none", "updates": "driver"
+    },
+    {
+      "id": "build-essential", "name": "Build tools", "category": "dev-tools",
+      "summary": "gcc, g++ and make, which packages with native code need to build.",
+      "publisher": { "name": "GNU Project", "url": "https://www.gnu.org" },
+      "homepage": "https://gcc.gnu.org", "license": "GPL-3.0-or-later",
+      "keywords": ["gcc", "g++", "make", "compiler", "build", "native"],
+      "detect": { "command": "gcc", "version": ["gcc", "--version"] },
+      "platforms": { "wsl": { "families": ["apt"], "driver": "apt", "account": "root",
+        "packages": ["build-essential"] } },
+      "signIn": "none", "updates": "driver"
+    },
+    {
+      "id": "python-pip", "name": "Python pip and venv", "category": "packages",
+      "summary": "Installs Python packages and makes virtual environments for the system Python.",
+      "publisher": { "name": "Python Packaging Authority", "url": "https://www.pypa.io" },
+      "homepage": "https://pip.pypa.io", "license": "MIT",
+      "keywords": ["python", "python3", "pip", "venv", "packages"],
+      "detect": { "command": "pip3", "version": ["pip3", "--version"] },
+      "platforms": { "wsl": { "families": ["apt"], "driver": "apt", "account": "root",
+        "packages": ["python3-pip", "python3-venv"] } },
+      "signIn": "none", "updates": "driver"
+    },
+    {
+      "id": "uv", "name": "uv", "category": "packages",
+      "summary": "A fast Python package and project manager that also installs Python itself.",
+      "publisher": { "name": "Astral", "url": "https://astral.sh" },
+      "homepage": "https://docs.astral.sh/uv/", "license": "MIT OR Apache-2.0",
+      "keywords": ["python", "pip", "uvx", "packages", "venv"],
+      "detect": { "command": "uv", "version": ["uv", "--version"] },
+      "platforms": { "wsl": { "driver": "vendor-script", "account": "user",
+        "hosts": ["astral.sh"], "script": "https://astral.sh/uv/install.sh",
+        "env": { "UV_NO_MODIFY_PATH": "1" } } },
+      "signIn": "none", "updates": "vendor"
+    },
+    {
+      "id": "pnpm", "name": "pnpm", "category": "packages",
+      "summary": "A fast, disk-efficient package manager for JavaScript projects.",
+      "publisher": { "name": "pnpm", "url": "https://pnpm.io" },
+      "homepage": "https://pnpm.io", "license": "MIT",
+      "keywords": ["npm", "javascript", "node", "packages", "monorepo"],
+      "detect": { "command": "pnpm", "version": ["pnpm", "--version"] },
+      "platforms": { "wsl": { "driver": "npm-global", "account": "user", "package": "pnpm" } },
+      "dependsOn": ["nodejs"], "signIn": "none", "updates": "driver"
+    },
+    {
+      "id": "bun", "name": "Bun", "category": "runtime",
+      "summary": "A JavaScript runtime, package manager and test runner in one fast binary.",
+      "publisher": { "name": "Oven", "url": "https://oven.sh" },
+      "homepage": "https://bun.sh", "license": "MIT",
+      "keywords": ["javascript", "typescript", "runtime", "bunx", "packages"],
+      "detect": { "command": "bun", "version": ["bun", "--version"] },
+      "platforms": { "wsl": { "driver": "npm-global", "account": "user", "package": "bun" } },
+      "dependsOn": ["nodejs"], "signIn": "none", "updates": "driver"
+    },
+    {
+      "id": "deno", "name": "Deno", "category": "runtime",
+      "summary": "A JavaScript and TypeScript runtime with permissions and tools built in.",
+      "publisher": { "name": "Deno Land", "url": "https://deno.com" },
+      "homepage": "https://docs.deno.com", "license": "MIT",
+      "keywords": ["javascript", "typescript", "runtime"],
+      "detect": { "command": "deno", "version": ["deno", "--version"] },
+      "platforms": { "wsl": { "driver": "npm-global", "account": "user", "package": "deno" } },
+      "dependsOn": ["nodejs"], "signIn": "none", "updates": "driver"
+    },
+    {
+      "id": "ffmpeg", "name": "FFmpeg", "category": "media",
+      "summary": "Converts, cuts and records audio and video from the command line.",
+      "publisher": { "name": "FFmpeg", "url": "https://ffmpeg.org" },
+      "homepage": "https://ffmpeg.org", "license": "GPL-2.0-or-later",
+      "keywords": ["video", "audio", "convert", "media", "transcode"],
+      "detect": { "command": "ffmpeg", "version": ["ffmpeg", "-version"] },
+      "platforms": { "wsl": { "families": ["apt"], "driver": "apt", "account": "root",
+        "packages": ["ffmpeg"] } },
+      "signIn": "none", "updates": "driver"
+    },
+
+    {
+      "id": "tmux", "name": "tmux", "category": "runtime", "required": true,
+      "summary": "Keeps every agent's terminal running when no window is open.",
+      "publisher": { "name": "tmux", "url": "https://github.com/tmux/tmux" },
+      "homepage": "https://github.com/tmux/tmux/wiki", "license": "ISC",
+      "keywords": ["tmux", "terminal", "multiplexer"],
+      "detect": { "command": "tmux", "version": ["tmux", "-V"], "pattern": "([0-9]+\\.[0-9]+[a-z]?)" },
+      "platforms": { "wsl": { "driver": "setup" } }
+    },
+    {
+      "id": "git", "name": "Git", "category": "git", "required": true,
+      "summary": "Version control for every workspace.",
+      "publisher": { "name": "The Git project", "url": "https://git-scm.com" },
+      "homepage": "https://git-scm.com", "license": "GPL-2.0-only",
+      "keywords": ["git", "version control"],
+      "detect": { "command": "git", "version": ["git", "--version"] },
+      "platforms": { "wsl": { "driver": "setup" } }
+    },
+    {
+      "id": "curl", "name": "curl", "category": "runtime", "required": true,
+      "summary": "Downloads what installs and updates need.",
+      "publisher": { "name": "curl", "url": "https://curl.se" },
+      "homepage": "https://curl.se", "license": "curl",
+      "keywords": ["curl", "download", "http"],
+      "detect": { "command": "curl", "version": ["curl", "--version"] },
+      "platforms": { "wsl": { "driver": "setup" } }
+    },
+    {
+      "id": "nodejs", "name": "Node.js", "category": "runtime", "required": true,
+      "summary": "Runs the agent CLIs and tools that ship as npm packages.",
+      "publisher": { "name": "OpenJS Foundation", "url": "https://openjsf.org" },
+      "homepage": "https://nodejs.org", "license": "MIT",
+      "keywords": ["node", "nodejs", "npm", "javascript"],
+      "detect": { "command": "node", "version": ["node", "--version"] },
+      "platforms": { "wsl": { "driver": "setup" } }
+    },
+    {
+      "id": "mkcert", "name": "mkcert", "category": "runtime", "required": true,
+      "summary": "Makes the local certificate the app and the phone trust.",
+      "publisher": { "name": "Filippo Valsorda", "url": "https://github.com/FiloSottile" },
+      "homepage": "https://github.com/FiloSottile/mkcert", "license": "BSD-3-Clause",
+      "keywords": ["mkcert", "certificate", "https", "tls"],
+      "detect": { "command": "mkcert", "version": ["mkcert", "-version"] },
+      "platforms": { "wsl": { "driver": "setup" } }
+    }
+  ]
+}
