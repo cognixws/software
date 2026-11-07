@@ -150,6 +150,17 @@
       "dependsOn": ["nodejs"], "signIn": "later", "updates": "driver"
     },
     {
+      "id": "netlify", "name": "Netlify CLI", "category": "cloud",
+      "summary": "Build, preview and deploy Netlify sites and functions from the terminal.",
+      "publisher": { "name": "Netlify", "url": "https://www.netlify.com" },
+      "homepage": "https://docs.netlify.com/cli/get-started/", "license": "MIT",
+      "keywords": ["netlify", "deploy", "hosting", "functions"],
+      "detect": { "command": "netlify", "version": ["netlify", "--version"] },
+      "platforms": { "wsl": { "driver": "npm-global", "account": "user", "package": "netlify-cli",
+        "env": { "NETLIFY_TELEMETRY_DISABLED": "1" } } },
+      "dependsOn": ["nodejs"], "signIn": "later", "updates": "driver"
+    },
+    {
       "id": "supabase", "name": "Supabase CLI", "category": "cloud",
       "summary": "Develop and deploy Supabase projects from the terminal.",
       "publisher": { "name": "Supabase", "url": "https://supabase.com" },
