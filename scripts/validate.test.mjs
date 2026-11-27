@@ -2,6 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { buildPayload } from "./payload.mjs";
 import { validateCatalog, validateEntry, validateBundle } from "./validate.mjs";
 
 const catalog = JSON.parse(readFileSync(new URL("../catalog.json", import.meta.url), "utf8"));
@@ -108,4 +109,27 @@ test("starter sets: known area, 2 to 12 distinct items the catalog holds", () =>
     assert.notDeepEqual(validateBundle(bad, ids), []);
   }
   assert.notDeepEqual(validateCatalog({ version: 1, entries: [npm()], bundles: [ok] }), []);
+});
+
+test("the signed payload carries the starter sets and every field the catalog holds", () => {
+  const p = JSON.parse(buildPayload(catalog, 3, "2026-11-26T00:00:00Z"));
+  assert.deepEqual(p.bundles, catalog.bundles);
+  assert.deepEqual(p.entries, catalog.entries);
+  assert.equal(p.serial, 3);
+  for (const k of Object.keys(catalog)) assert.ok(k in p, `${k} is dropped from the signed payload`);
+});
+
+test("refuses what Go would read differently or refuse (S3b review)", () => {
+  const bad = {
+    "a key that differs by case": pinned((e, p, r) => { r.Version = "9.9.9"; }),
+    "publisher with an extra key": set((e) => { e.publisher.Name = "x"; }),
+    "windows null": set((e) => { e.platforms.windows = null; }),
+    "hosts as a string": pinned((e, p) => { p.hosts = "github.com"; }),
+    "a target named constructor": pinned((e, p, r) => { r.targets = { constructor: "x" }; }),
+    "path as a list": pinned((e, p, r) => { r.path = ["x-{target}/x"]; }),
+    "formats as a string": set((e) => { e.agent = { formats: "" }; }),
+    "grants as a number": set((e) => { e.grants = 1; }),
+    "agent note over the byte cap": set((e) => { e.agent = { summary: "—".repeat(150) }; }),
+  };
+  for (const [name, e] of Object.entries(bad)) assert.notDeepEqual(validateEntry(e), [], name);
 });

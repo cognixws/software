@@ -68,7 +68,7 @@ const wingetIdRe = /^[A-Za-z0-9][A-Za-z0-9-]{0,63}(\.[A-Za-z0-9][A-Za-z0-9+_-]{0
 const distVersionRe = /^[0-9]+\.[0-9]+\.[0-9]+$/;
 const distPlatforms = ["linux-x64", "linux-arm64"];
 const unsupportedAssetRe = /\.(deb|rpm|apk|msi|exe|dmg|pkg|7z|rar|bz2|zst|tar|gz|xz|tbz2?|appimage|sig|asc|sha256|pem)$/i;
-const plain = (s, max) => typeof s === "string" && s.length <= max && !/[\u0000-\u001f\u007f]/.test(s);
+const plain = (s, max) => typeof s === "string" && Buffer.byteLength(s) <= max && !/[\u0000-\u001f\u007f]/.test(s);
 export const assetFormat = (asset) => {
   const a = asset.toLowerCase();
   if (a.endsWith(".tar.gz") || a.endsWith(".tgz")) return "tar.gz";
@@ -118,11 +118,11 @@ function validateRelease(r, bad) {
     if (arch !== "amd64" && arch !== "arm64") bad(`unknown architecture "${arch}"`);
     if (!str(sum) || !sha256Re.test(sum)) bad(`sha256 for ${arch} is not 64 lower-case hex digits`);
   }
-  for (const [arch, t] of Object.entries(r.targets || {})) if (!(arch in sums) || !str(t) || !targetRe.test(t)) bad(`target for ${arch} needs a pin and a plain name`);
+  for (const [arch, t] of Object.entries(r.targets || {})) if (!Object.hasOwn(sums, arch) || !str(t) || !targetRe.test(t)) bad(`target for ${arch} needs a pin and a plain name`);
   if (hasTarget && Object.keys(r.targets || {}).length !== Object.keys(sums).length) bad("{target} needs a target for every pinned architecture");
   if (r.path !== undefined) {
     const segs = String(r.path).split("/");
-    if (!archPathRe.test(r.path) || segs.includes("..") || segs.includes(".")) bad("github-release path must be a plain relative path");
+    if (!str(r.path) || !archPathRe.test(r.path) || segs.includes("..") || segs.includes(".")) bad("github-release path must be a plain relative path");
     if (format === "binary") bad("a bare binary has no path inside");
   }
   if (r.folder !== undefined && typeof r.folder !== "boolean") bad("folder is true or false");
@@ -130,6 +130,7 @@ function validateRelease(r, bad) {
 }
 
 function validateWinget(p, bad) {
+  if (typeof p !== "object" || p === null || Array.isArray(p)) return bad("the windows platform is an object");
   for (const k of Object.keys(p)) if (!["driver", "id", "scope"].includes(k)) return bad("winget takes only an id and a scope");
   if (p.driver !== "winget") return bad("the windows platform uses the winget driver");
   if (!str(p.id) || !wingetIdRe.test(p.id)) bad("winget needs a package identifier");
@@ -149,8 +150,10 @@ function validateV2(e, bad) {
   if (typeof a !== "object" || a === null || Array.isArray(a)) return bad("agent must be an object");
   for (const k of Object.keys(a)) if (!agentKeys.has(k)) bad(`unknown agent field "${k}"`);
   if (!plain(a.summary ?? "", 300) || !plain(a.caveats ?? "", 500) || (a.commands ?? []).length > 8 || (a.formats ?? []).length > 24) bad("agent notes are plain and short");
-  for (const c of a.commands ?? []) if (!str(c) || !c.trim() || !plain(c, 200)) bad("agent commands are plain lines");
-  for (const f of a.formats ?? []) if (!str(f) || !formatRe.test(f)) bad(`agent format "${f}" is not a file extension`);
+  for (const c of Array.isArray(a.commands) ? a.commands : []) if (!str(c) || !c.trim() || !plain(c, 200)) bad("agent commands are plain lines");
+  if (a.formats !== undefined && !Array.isArray(a.formats)) bad("agent formats is a list");
+  if (a.commands !== undefined && !Array.isArray(a.commands)) bad("agent commands is a list");
+  for (const f of Array.isArray(a.formats) ? a.formats : []) if (!str(f) || !formatRe.test(f)) bad(`agent format "${f}" is not a file extension`);
   if ((a.skill !== undefined && !(str(a.skill) && idRe.test(a.skill))) || (a.extension !== undefined && !(str(a.extension) && extIdRe.test(a.extension)))) bad("agent skill and extension are ids");
 }
 
@@ -171,6 +174,13 @@ export function validateBundle(b, ids) {
   return errs;
 }
 
+// Go matches JSON keys case-insensitively: only the exact, known names pass,
+// so "Package" next to "package" cannot slip a second value past this check.
+const closedKeys = (o, allowed, what, bad) => {
+  if (typeof o !== "object" || o === null || Array.isArray(o)) return bad(`${what} must be an object`);
+  for (const k of Object.keys(o)) if (!allowed.includes(k)) bad(`unknown ${what} field "${k}"`);
+};
+
 export function validateEntry(e) {
   const errs = [];
   const bad = (m) => errs.push(m);
@@ -186,15 +196,22 @@ export function validateEntry(e) {
   if (!signIns.has(e.signIn ?? "")) bad(`unknown signIn "${e.signIn}"`);
   if (!updatesSet.has(e.updates ?? "")) bad(`unknown updates "${e.updates}"`);
   validateV2(e, bad);
+  closedKeys(e.publisher, ["name", "url"], "publisher", bad);
+  if (e.detect !== undefined) closedKeys(e.detect, ["command", "version", "pattern"], "detect", bad);
+  if (e.grants !== undefined && !str(e.grants)) bad("grants must be text");
   if (typeof e.platforms !== "object" || e.platforms === null) {
     bad("no platforms");
     return errs;
   }
   for (const k of Object.keys(e.platforms)) if (k !== "wsl" && k !== "windows") bad(`platform "${k}" is not read by any version`);
   const w = e.platforms.windows;
-  if (w) {
+  if (w !== undefined) {
     if (e.category === "agent-clis") bad("agent CLIs have no Windows platform");
     validateWinget(w, bad);
+  }
+  if (e.platforms.wsl !== undefined && (typeof e.platforms.wsl !== "object" || e.platforms.wsl === null)) {
+    bad("platforms.wsl must be an object");
+    return errs;
   }
   const p = e.platforms.wsl;
   const d = e.detect || {};
@@ -214,7 +231,11 @@ export function validateEntry(e) {
     }
   }
   for (const k of Object.keys(p)) if (!platformKeys.has(k)) bad(`unknown platform field "${k}"`);
-  if (!(p.driver in drivers) || p.driver === "winget") {
+  if (p.hosts !== undefined && !(Array.isArray(p.hosts) && p.hosts.every(str))) bad("hosts must be a list of host names");
+  if (p.repo !== undefined) closedKeys(p.repo, ["url", "suite", "components", "key", "fingerprint"], "repo", bad);
+  if (p.tool !== undefined) closedKeys(p.tool, ["package", "version", "extras", "python", "resolvedAt"], "tool", bad);
+  if (p.dist !== undefined) closedKeys(p.dist, ["version", "sha256"], "dist", bad);
+  if (!str(p.driver) || !Object.hasOwn(drivers, p.driver) || p.driver === "winget") {
     bad(`unknown driver "${p.driver}" for a Linux platform`);
     return errs;
   }
@@ -250,7 +271,7 @@ export function validateEntry(e) {
       if (!t || !str(t.package) || !pypiRe.test(t.package) || !str(t.version) || !pyVersionRe.test(t.version)) bad("uv-tool needs a PyPI package and its pinned version");
       if ((t?.extras || []).length > 8 || !(t?.extras || []).every((x) => str(x) && extraRe.test(x))) bad("uv-tool takes at most 8 plain extras");
       if (t?.python !== undefined && !pythonRe.test(t.python)) bad("uv-tool python must be a version such as 3.12");
-      if (!str(t?.resolvedAt) || !t.resolvedAt.endsWith("Z") || Number.isNaN(Date.parse(t.resolvedAt)) || new Date(t.resolvedAt).getUTCFullYear() < 2020) bad("uv-tool needs resolvedAt, the UTC time its dependencies were resolved");
+      if (!str(t?.resolvedAt) || !/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ$/.test(t.resolvedAt) || Number.isNaN(Date.parse(t.resolvedAt)) || new Date(t.resolvedAt).getUTCFullYear() < 2020) bad("uv-tool needs resolvedAt, the UTC time its dependencies were resolved");
       if (!(e.dependsOn || []).includes("uv")) bad("uv-tool entries depend on uv");
       if (p.package || p.packages?.length || p.script || p.repo || p.hosts?.length || (p.env && Object.keys(p.env).length)) bad("uv-tool takes only its tool");
       break;
@@ -333,12 +354,31 @@ const ghHeaders = () => (token ? { Authorization: `Bearer ${token}`, Accept: "ap
 // architecture, must hash to the catalog's sha256 (downloaded whole, 256 MiB
 // cap), and when the entry names a checksums file the vendor's must list the
 // same hash.
-async function checkPinnedRelease(e, r) {
+// The driver refuses a redirect to a host the entry does not name
+// (release.go): so does this, hop by hop.
+async function getOnHosts(url, hosts, limit) {
+  for (let hop = 0; hop < 5; hop++) {
+    const u = new URL(url);
+    if (u.protocol !== "https:" || !(hosts || []).includes(u.host)) throw new Error(`${url} is on a host the entry does not name`);
+    const res = await fetch(url, { redirect: "manual", headers: { "User-Agent": "cognixws-software-validate" } });
+    if (res.status >= 300 && res.status < 400 && res.headers.get("location")) {
+      url = new URL(res.headers.get("location"), url).href;
+      continue;
+    }
+    if (!res.ok) throw new Error(`GET ${url} returned ${res.status}`);
+    const buf = Buffer.from(await res.arrayBuffer());
+    if (buf.length > limit) throw new Error(`${url} is larger than ${limit} bytes`);
+    return buf;
+  }
+  throw new Error(`${url}: too many redirects`);
+}
+
+async function checkPinnedRelease(e, r, hosts) {
   const tag = (r.tag || "v{version}").replaceAll("{version}", r.version);
   for (const [arch, want] of Object.entries(r.sha256)) {
     const fill = (t) => t.replaceAll("{version}", r.version).replaceAll("{arch}", arch).replaceAll("{target}", r.targets?.[arch] ?? "");
     const asset = fill(r.asset);
-    const body = await get(`https://github.com/${r.repo}/releases/download/${tag}/${asset}`, { limit: 256 << 20 });
+    const body = await getOnHosts(`https://github.com/${r.repo}/releases/download/${tag}/${asset}`, hosts, 256 << 20);
     const got = createHash("sha256").update(body).digest("hex");
     if (got !== want) fail(`${e.id}: ${asset} (${tag}) hashes to ${got}, the entry pins ${want}`);
     else notes.push(`${e.id}: ${arch} ${asset} ${tag} sha256 matches (${body.length} bytes)`);
@@ -371,7 +411,7 @@ async function checkSource(e) {
       const r = p.release;
       const meta = await get(`https://api.github.com/repos/${r.repo}`, { json: true, headers: ghHeaders() });
       if (meta.private || meta.fork || meta.archived) fail(`${e.id}: ${r.repo} is private, a fork or archived`);
-      if (r.version) return checkPinnedRelease(e, r);
+      if (r.version) return checkPinnedRelease(e, r, p.hosts);
       const rel = await get(`https://api.github.com/repos/${r.repo}/releases/latest`, { json: true, headers: ghHeaders() });
       const version = String(rel.tag_name).replace(/^v/, "");
       const names = new Set(rel.assets.map((a) => a.name));
