@@ -42,8 +42,13 @@ jobs:
           ASSOC: ${{ github.event.pull_request.author_association }}
         run: |
           # The judge is the base commit's copy, so a pull request cannot edit it.
-          git worktree add --detach "$RUNNER_TEMP/base" "$BASE_SHA"
-          node "$RUNNER_TEMP/base/scripts/pr-policy.mjs" "$BASE_SHA" "$HEAD_SHA" "$ASSOC" > "$RUNNER_TEMP/changed-entries"
+          # (Only the pull request that introduces pr-policy.mjs has no copy at its base: it uses its own.)
+          judge=scripts/pr-policy.mjs
+          if git cat-file -e "$BASE_SHA:scripts/pr-policy.mjs" 2>/dev/null; then
+            git worktree add --detach "$RUNNER_TEMP/base" "$BASE_SHA"
+            judge="$RUNNER_TEMP/base/scripts/pr-policy.mjs"
+          fi
+          node "$judge" "$BASE_SHA" "$HEAD_SHA" "$ASSOC" > "$RUNNER_TEMP/changed-entries"
           cat "$RUNNER_TEMP/changed-entries"
       - name: The changed entries against their official sources
         if: github.event_name == 'pull_request'
