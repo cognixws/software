@@ -18,6 +18,7 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { createPrivateKey, createPublicKey, sign, verify } from "node:crypto";
 import { validateCatalog } from "./validate.mjs";
+import { buildPayload } from "./payload.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const argv = process.argv.slice(2);
@@ -45,7 +46,7 @@ const doc = JSON.parse(readFileSync(join(root, "catalog.json"), "utf8"));
 const problems = validateCatalog(doc);
 if (problems.length) die(`catalog.json is not valid:\n  ${problems.join("\n  ")}`);
 
-const payload = Buffer.from(JSON.stringify({ version: doc.version, serial, issued: new Date().toISOString().replace(/\.\d+Z$/, "Z"), entries: doc.entries }));
+const payload = buildPayload(doc, serial, new Date().toISOString().replace(/\.\d+Z$/, "Z"));
 const signature = sign(null, payload, key);
 if (!verify(null, payload, pub, signature)) die("the signing key does not match keys/index.pub; nothing was written");
 writeFileSync(out, JSON.stringify({ payload: payload.toString("base64"), signature: signature.toString("base64") }) + "\n");

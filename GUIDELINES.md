@@ -24,7 +24,10 @@ reviewer merges only when every line below holds.
   person's shell profile.
 - `apt-repo`: the fingerprint is the one the vendor publishes; CI checks the
   key at the URL against it. `github-release`: the release ships a checksums
-  file that lists the asset. `vendor-script`: CI prints the script's SHA-256;
+  file that lists the asset. A pinned `github-release` (a `version` and a `sha256` per
+  architecture) needs no checksums file: CI downloads each asset from the
+  vendor's release and compares its hash with the pin, and a checksums file,
+  when named, must list the same hash. `vendor-script`: CI prints the script's SHA-256;
   read the script once.
 - Root (`apt`, `apt-repo`) and code (`cli`, `setup`) entries reach people with
   the next app release; say so in the pull request.
