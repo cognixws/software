@@ -2,341 +2,1948 @@
   "version": 1,
   "entries": [
     {
-      "id": "pi", "name": "Pi", "category": "agent-clis",
+      "id": "pi",
+      "name": "Pi",
+      "category": "agent-clis",
       "summary": "A minimal terminal coding agent you can extend.",
-      "publisher": { "name": "Earendil Works", "url": "https://github.com/earendil-works" },
-      "homepage": "https://pi.dev", "license": "MIT",
-      "keywords": ["pi", "agent", "coding agent"],
-      "detect": { "command": "pi", "version": ["pi", "--version"] },
-      "platforms": { "wsl": { "driver": "cli" } },
-      "dependsOn": ["nodejs"], "signIn": "gui", "updates": "driver"
+      "publisher": {
+        "name": "Earendil Works",
+        "url": "https://github.com/earendil-works"
+      },
+      "homepage": "https://pi.dev",
+      "license": "MIT",
+      "keywords": [
+        "pi",
+        "agent",
+        "coding agent"
+      ],
+      "detect": {
+        "command": "pi",
+        "version": [
+          "pi",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "cli"
+        }
+      },
+      "dependsOn": [
+        "nodejs"
+      ],
+      "signIn": "gui",
+      "updates": "driver"
     },
     {
-      "id": "claude-code", "name": "Claude Code", "category": "agent-clis",
+      "id": "claude-code",
+      "name": "Claude Code",
+      "category": "agent-clis",
       "summary": "Anthropic's agentic coding tool in your terminal.",
-      "publisher": { "name": "Anthropic", "url": "https://www.anthropic.com" },
-      "homepage": "https://code.claude.com/docs/en/setup", "license": "Proprietary",
-      "keywords": ["claude", "anthropic", "agent", "coding agent"],
-      "detect": { "command": "claude", "version": ["claude", "--version"] },
-      "platforms": { "wsl": { "driver": "cli" } },
-      "dependsOn": ["nodejs"], "signIn": "gui", "updates": "driver"
+      "publisher": {
+        "name": "Anthropic",
+        "url": "https://www.anthropic.com"
+      },
+      "homepage": "https://code.claude.com/docs/en/setup",
+      "license": "Proprietary",
+      "keywords": [
+        "claude",
+        "anthropic",
+        "agent",
+        "coding agent"
+      ],
+      "detect": {
+        "command": "claude",
+        "version": [
+          "claude",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "cli"
+        }
+      },
+      "dependsOn": [
+        "nodejs"
+      ],
+      "signIn": "gui",
+      "updates": "driver"
     },
     {
-      "id": "codex", "name": "Codex", "category": "agent-clis",
+      "id": "codex",
+      "name": "Codex",
+      "category": "agent-clis",
       "summary": "OpenAI's coding agent that runs in your terminal.",
-      "publisher": { "name": "OpenAI", "url": "https://openai.com" },
-      "homepage": "https://learn.chatgpt.com/docs/codex/cli", "license": "Apache-2.0",
-      "keywords": ["codex", "openai", "chatgpt", "agent", "coding agent"],
-      "detect": { "command": "codex", "version": ["codex", "--version"] },
-      "platforms": { "wsl": { "driver": "cli" } },
-      "dependsOn": ["nodejs"], "signIn": "gui", "updates": "driver"
+      "publisher": {
+        "name": "OpenAI",
+        "url": "https://openai.com"
+      },
+      "homepage": "https://learn.chatgpt.com/docs/codex/cli",
+      "license": "Apache-2.0",
+      "keywords": [
+        "codex",
+        "openai",
+        "chatgpt",
+        "agent",
+        "coding agent"
+      ],
+      "detect": {
+        "command": "codex",
+        "version": [
+          "codex",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "cli"
+        }
+      },
+      "dependsOn": [
+        "nodejs"
+      ],
+      "signIn": "gui",
+      "updates": "driver"
     },
     {
-      "id": "grok", "name": "Grok", "category": "agent-clis",
+      "id": "grok",
+      "name": "Grok",
+      "category": "agent-clis",
       "summary": "xAI's Grok as a coding agent in your terminal.",
-      "publisher": { "name": "xAI", "url": "https://x.ai" },
-      "homepage": "https://docs.x.ai/build/cli/reference", "license": "Proprietary",
-      "keywords": ["grok", "xai", "agent", "coding agent"],
-      "detect": { "command": "grok", "version": ["grok", "--version"] },
-      "platforms": { "wsl": { "driver": "cli" } },
-      "signIn": "gui", "updates": "driver"
+      "publisher": {
+        "name": "xAI",
+        "url": "https://x.ai"
+      },
+      "homepage": "https://docs.x.ai/build/cli/reference",
+      "license": "Proprietary",
+      "keywords": [
+        "grok",
+        "xai",
+        "agent",
+        "coding agent"
+      ],
+      "detect": {
+        "command": "grok",
+        "version": [
+          "grok",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "cli"
+        }
+      },
+      "signIn": "gui",
+      "updates": "driver"
     },
     {
-      "id": "opencode", "name": "OpenCode", "category": "agent-clis",
+      "id": "opencode",
+      "name": "OpenCode",
+      "category": "agent-clis",
       "summary": "An open source coding agent that works with many model providers.",
-      "publisher": { "name": "Anomaly", "url": "https://github.com/anomalyco" },
-      "homepage": "https://opencode.ai/docs", "license": "MIT",
-      "keywords": ["opencode", "anomaly", "sst", "agent", "coding agent"],
-      "detect": { "command": "opencode", "version": ["opencode", "--version"] },
-      "platforms": { "wsl": { "driver": "cli" } },
-      "dependsOn": ["nodejs"], "signIn": "gui", "updates": "driver"
+      "publisher": {
+        "name": "Anomaly",
+        "url": "https://github.com/anomalyco"
+      },
+      "homepage": "https://opencode.ai/docs",
+      "license": "MIT",
+      "keywords": [
+        "opencode",
+        "anomaly",
+        "sst",
+        "agent",
+        "coding agent"
+      ],
+      "detect": {
+        "command": "opencode",
+        "version": [
+          "opencode",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "cli"
+        }
+      },
+      "dependsOn": [
+        "nodejs"
+      ],
+      "signIn": "gui",
+      "updates": "driver"
     },
     {
-      "id": "muse", "name": "Muse Code", "category": "agent-clis",
+      "id": "muse",
+      "name": "Muse Code",
+      "category": "agent-clis",
       "summary": "Meta's coding agent for the terminal.",
-      "publisher": { "name": "Meta", "url": "https://dev.meta.ai" },
-      "homepage": "https://dev.meta.ai/docs/muse-code", "license": "Proprietary",
-      "keywords": ["muse", "meta", "agent", "coding agent"],
-      "detect": { "command": "muse", "version": ["muse", "--version"] },
-      "platforms": { "wsl": { "driver": "cli" } },
-      "signIn": "gui", "updates": "driver"
+      "publisher": {
+        "name": "Meta",
+        "url": "https://dev.meta.ai"
+      },
+      "homepage": "https://dev.meta.ai/docs/muse-code",
+      "license": "Proprietary",
+      "keywords": [
+        "muse",
+        "meta",
+        "agent",
+        "coding agent"
+      ],
+      "detect": {
+        "command": "muse",
+        "version": [
+          "muse",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "cli"
+        }
+      },
+      "signIn": "gui",
+      "updates": "driver"
     },
     {
-      "id": "agy", "name": "Antigravity", "category": "agent-clis",
+      "id": "agy",
+      "name": "Antigravity",
+      "category": "agent-clis",
       "summary": "Google's Antigravity coding agent in your terminal.",
-      "publisher": { "name": "Google", "url": "https://antigravity.google" },
-      "homepage": "https://antigravity.google/docs/cli/", "license": "Proprietary",
-      "keywords": ["antigravity", "agy", "google", "gemini", "agent", "coding agent"],
-      "detect": { "command": "agy", "version": ["agy", "--version"] },
-      "platforms": { "wsl": { "driver": "cli" } },
-      "signIn": "gui", "updates": "driver"
+      "publisher": {
+        "name": "Google",
+        "url": "https://antigravity.google"
+      },
+      "homepage": "https://antigravity.google/docs/cli/",
+      "license": "Proprietary",
+      "keywords": [
+        "antigravity",
+        "agy",
+        "google",
+        "gemini",
+        "agent",
+        "coding agent"
+      ],
+      "detect": {
+        "command": "agy",
+        "version": [
+          "agy",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "cli"
+        }
+      },
+      "signIn": "gui",
+      "updates": "driver"
     },
     {
-      "id": "omp", "name": "Omp", "category": "agent-clis",
+      "id": "omp",
+      "name": "Omp",
+      "category": "agent-clis",
       "summary": "oh-my-pi, a Pi fork with batteries included.",
-      "publisher": { "name": "Stencil Labs", "url": "https://omp.sh" },
-      "homepage": "https://omp.sh/docs", "license": "MIT",
-      "keywords": ["omp", "oh-my-pi", "pi", "agent", "coding agent"],
-      "detect": { "command": "omp", "version": ["omp", "--version"] },
-      "platforms": { "wsl": { "driver": "cli" } },
-      "dependsOn": ["nodejs"], "signIn": "gui", "updates": "driver"
+      "publisher": {
+        "name": "Stencil Labs",
+        "url": "https://omp.sh"
+      },
+      "homepage": "https://omp.sh/docs",
+      "license": "MIT",
+      "keywords": [
+        "omp",
+        "oh-my-pi",
+        "pi",
+        "agent",
+        "coding agent"
+      ],
+      "detect": {
+        "command": "omp",
+        "version": [
+          "omp",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "cli"
+        }
+      },
+      "dependsOn": [
+        "nodejs"
+      ],
+      "signIn": "gui",
+      "updates": "driver"
     },
-
     {
-      "id": "gh", "name": "GitHub CLI", "category": "git",
+      "id": "gh",
+      "name": "GitHub CLI",
+      "category": "git",
       "summary": "Work with GitHub pull requests, issues and releases from the terminal.",
-      "publisher": { "name": "GitHub", "url": "https://github.com" },
-      "homepage": "https://cli.github.com", "license": "MIT",
-      "keywords": ["github", "gh", "git", "pull request", "issues"],
-      "detect": { "command": "gh", "version": ["gh", "--version"] },
-      "platforms": { "wsl": { "families": ["apt"], "driver": "apt", "account": "root",
-        "packages": ["gh"] } },
-      "signIn": "later", "updates": "driver"
+      "publisher": {
+        "name": "GitHub",
+        "url": "https://github.com"
+      },
+      "homepage": "https://cli.github.com",
+      "license": "MIT",
+      "keywords": [
+        "github",
+        "gh",
+        "git",
+        "pull request",
+        "issues"
+      ],
+      "detect": {
+        "command": "gh",
+        "version": [
+          "gh",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "families": [
+            "apt"
+          ],
+          "driver": "apt",
+          "account": "root",
+          "packages": [
+            "gh"
+          ]
+        },
+        "windows": {
+          "driver": "winget",
+          "id": "GitHub.cli",
+          "scope": "machine"
+        }
+      },
+      "signIn": "later",
+      "updates": "driver"
     },
     {
-      "id": "docker", "name": "Docker Engine", "category": "containers",
+      "id": "docker",
+      "name": "Docker Engine",
+      "category": "containers",
       "summary": "Run containers in your Linux environment.",
-      "publisher": { "name": "Docker Inc.", "url": "https://www.docker.com" },
-      "homepage": "https://docs.docker.com/engine/", "license": "Apache-2.0",
-      "keywords": ["docker", "compose", "buildx", "containers"],
-      "detect": { "command": "docker", "version": ["docker", "--version"] },
-      "platforms": { "wsl": { "families": ["apt"], "driver": "apt-repo", "account": "root",
-        "hosts": ["download.docker.com"],
-        "repo": { "url": "https://download.docker.com/linux/{base}", "suite": "{codename}", "components": "stable",
-                  "key": "https://download.docker.com/linux/{base}/gpg",
-                  "fingerprint": "9DC858229FC7DD38854AE2D88D81803C0EBFCD88" },
-        "packages": ["docker-ce", "docker-ce-cli", "containerd.io", "docker-buildx-plugin", "docker-compose-plugin"],
-        "conflicts": ["docker.io", "podman-docker"],
-        "after": ["docker-access"],
-        "remove": { "packages": ["docker-ce", "docker-ce-cli"], "keeps": "images and volumes" } } },
+      "publisher": {
+        "name": "Docker Inc.",
+        "url": "https://www.docker.com"
+      },
+      "homepage": "https://docs.docker.com/engine/",
+      "license": "Apache-2.0",
+      "keywords": [
+        "docker",
+        "compose",
+        "buildx",
+        "containers"
+      ],
+      "detect": {
+        "command": "docker",
+        "version": [
+          "docker",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "families": [
+            "apt"
+          ],
+          "driver": "apt-repo",
+          "account": "root",
+          "hosts": [
+            "download.docker.com"
+          ],
+          "repo": {
+            "url": "https://download.docker.com/linux/{base}",
+            "suite": "{codename}",
+            "components": "stable",
+            "key": "https://download.docker.com/linux/{base}/gpg",
+            "fingerprint": "9DC858229FC7DD38854AE2D88D81803C0EBFCD88"
+          },
+          "packages": [
+            "docker-ce",
+            "docker-ce-cli",
+            "containerd.io",
+            "docker-buildx-plugin",
+            "docker-compose-plugin"
+          ],
+          "conflicts": [
+            "docker.io",
+            "podman-docker"
+          ],
+          "after": [
+            "docker-access"
+          ],
+          "remove": {
+            "packages": [
+              "docker-ce",
+              "docker-ce-cli",
+              "containerd.io",
+              "docker-buildx-plugin",
+              "docker-compose-plugin"
+            ],
+            "keeps": "images and volumes"
+          }
+        }
+      },
       "grants": "Anyone who can use Docker gets full administrator control of this Linux environment.",
-      "signIn": "none", "updates": "driver"
+      "signIn": "none",
+      "updates": "driver"
     },
     {
-      "id": "tailscale", "name": "Tailscale", "category": "networking",
+      "id": "tailscale",
+      "name": "Tailscale",
+      "category": "networking",
       "summary": "Reach this computer from your other devices over a private network.",
-      "publisher": { "name": "Tailscale Inc.", "url": "https://tailscale.com" },
-      "homepage": "https://tailscale.com/kb/1031/install-linux", "license": "BSD-3-Clause",
-      "keywords": ["tailscale", "vpn", "wireguard", "network", "remote"],
-      "detect": { "command": "tailscale", "version": ["tailscale", "version"] },
-      "platforms": { "wsl": { "families": ["apt"], "driver": "apt-repo", "account": "root",
-        "hosts": ["pkgs.tailscale.com"],
-        "repo": { "url": "https://pkgs.tailscale.com/stable/{base}", "suite": "{codename}", "components": "main",
-                  "key": "https://pkgs.tailscale.com/stable/{base}/{codename}.noarmor.gpg",
-                  "fingerprint": "2596A99EAAB33821893C0A79458CA832957F5868" },
-        "packages": ["tailscale"] } },
-      "signIn": "later", "updates": "driver"
+      "publisher": {
+        "name": "Tailscale Inc.",
+        "url": "https://tailscale.com"
+      },
+      "homepage": "https://tailscale.com/kb/1031/install-linux",
+      "license": "BSD-3-Clause",
+      "keywords": [
+        "tailscale",
+        "vpn",
+        "wireguard",
+        "network",
+        "remote"
+      ],
+      "detect": {
+        "command": "tailscale",
+        "version": [
+          "tailscale",
+          "version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "families": [
+            "apt"
+          ],
+          "driver": "apt-repo",
+          "account": "root",
+          "hosts": [
+            "pkgs.tailscale.com"
+          ],
+          "repo": {
+            "url": "https://pkgs.tailscale.com/stable/{base}",
+            "suite": "{codename}",
+            "components": "main",
+            "key": "https://pkgs.tailscale.com/stable/{base}/{codename}.noarmor.gpg",
+            "fingerprint": "2596A99EAAB33821893C0A79458CA832957F5868"
+          },
+          "packages": [
+            "tailscale"
+          ]
+        },
+        "windows": {
+          "driver": "winget",
+          "id": "Tailscale.Tailscale",
+          "scope": "machine"
+        }
+      },
+      "signIn": "later",
+      "updates": "driver"
     },
     {
-      "id": "wrangler", "name": "Cloudflare Wrangler", "category": "cloud",
+      "id": "wrangler",
+      "name": "Cloudflare Wrangler",
+      "category": "cloud",
       "summary": "Build and deploy Cloudflare Workers and Pages.",
-      "publisher": { "name": "Cloudflare", "url": "https://www.cloudflare.com" },
-      "homepage": "https://developers.cloudflare.com/workers/wrangler/", "license": "MIT OR Apache-2.0",
-      "keywords": ["cloudflare", "wrangler", "workers", "pages", "deploy"],
-      "detect": { "command": "wrangler", "version": ["wrangler", "--version"] },
-      "platforms": { "wsl": { "driver": "npm-global", "account": "user", "package": "wrangler",
-        "env": { "WRANGLER_SEND_METRICS": "false" } } },
-      "dependsOn": ["nodejs"], "signIn": "later", "updates": "driver"
+      "publisher": {
+        "name": "Cloudflare",
+        "url": "https://www.cloudflare.com"
+      },
+      "homepage": "https://developers.cloudflare.com/workers/wrangler/",
+      "license": "MIT OR Apache-2.0",
+      "keywords": [
+        "cloudflare",
+        "wrangler",
+        "workers",
+        "pages",
+        "deploy"
+      ],
+      "detect": {
+        "command": "wrangler",
+        "version": [
+          "wrangler",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "npm-global",
+          "account": "user",
+          "package": "wrangler",
+          "env": {
+            "WRANGLER_SEND_METRICS": "false"
+          }
+        }
+      },
+      "dependsOn": [
+        "nodejs"
+      ],
+      "signIn": "later",
+      "updates": "driver"
     },
     {
-      "id": "vercel", "name": "Vercel CLI", "category": "cloud",
+      "id": "vercel",
+      "name": "Vercel CLI",
+      "category": "cloud",
       "summary": "Deploy and manage Vercel projects from the terminal.",
-      "publisher": { "name": "Vercel", "url": "https://vercel.com" },
-      "homepage": "https://vercel.com/docs/cli", "license": "Apache-2.0",
-      "keywords": ["vercel", "deploy", "hosting", "next.js"],
-      "detect": { "command": "vercel", "version": ["vercel", "--version"] },
-      "platforms": { "wsl": { "driver": "npm-global", "account": "user", "package": "vercel",
-        "env": { "VERCEL_TELEMETRY_DISABLED": "1" } } },
-      "dependsOn": ["nodejs"], "signIn": "later", "updates": "driver"
+      "publisher": {
+        "name": "Vercel",
+        "url": "https://vercel.com"
+      },
+      "homepage": "https://vercel.com/docs/cli",
+      "license": "Apache-2.0",
+      "keywords": [
+        "vercel",
+        "deploy",
+        "hosting",
+        "next.js"
+      ],
+      "detect": {
+        "command": "vercel",
+        "version": [
+          "vercel",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "npm-global",
+          "account": "user",
+          "package": "vercel",
+          "env": {
+            "VERCEL_TELEMETRY_DISABLED": "1"
+          }
+        }
+      },
+      "dependsOn": [
+        "nodejs"
+      ],
+      "signIn": "later",
+      "updates": "driver"
     },
     {
-      "id": "netlify", "name": "Netlify CLI", "category": "cloud",
-      "summary": "Build, preview and deploy Netlify sites and functions from the terminal.",
-      "publisher": { "name": "Netlify", "url": "https://www.netlify.com" },
-      "homepage": "https://docs.netlify.com/cli/get-started/", "license": "MIT",
-      "keywords": ["netlify", "deploy", "hosting", "functions"],
-      "detect": { "command": "netlify", "version": ["netlify", "--version"] },
-      "platforms": { "wsl": { "driver": "npm-global", "account": "user", "package": "netlify-cli",
-        "env": { "NETLIFY_TELEMETRY_DISABLED": "1" } } },
-      "dependsOn": ["nodejs"], "signIn": "later", "updates": "driver"
-    },
-    {
-      "id": "supabase", "name": "Supabase CLI", "category": "cloud",
+      "id": "supabase",
+      "name": "Supabase CLI",
+      "category": "cloud",
       "summary": "Develop and deploy Supabase projects from the terminal.",
-      "publisher": { "name": "Supabase", "url": "https://supabase.com" },
-      "homepage": "https://supabase.com/docs/guides/local-development/cli/getting-started", "license": "MIT",
-      "keywords": ["supabase", "postgres", "database", "deploy"],
-      "detect": { "command": "supabase", "version": ["supabase", "--version"] },
-      "platforms": { "wsl": { "driver": "github-release", "account": "user",
-        "hosts": ["api.github.com", "github.com", "objects.githubusercontent.com", "release-assets.githubusercontent.com"],
-        "release": { "repo": "supabase/cli", "asset": "supabase_{version}_linux_{arch}.tar.gz",
-                     "checksums": "checksums.txt", "binary": "supabase" } } },
-      "signIn": "later", "updates": "driver"
+      "publisher": {
+        "name": "Supabase",
+        "url": "https://supabase.com"
+      },
+      "homepage": "https://supabase.com/docs/guides/local-development/cli/getting-started",
+      "license": "MIT",
+      "keywords": [
+        "supabase",
+        "postgres",
+        "database",
+        "deploy"
+      ],
+      "detect": {
+        "command": "supabase",
+        "version": [
+          "supabase",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "github-release",
+          "account": "user",
+          "hosts": [
+            "api.github.com",
+            "github.com",
+            "objects.githubusercontent.com",
+            "release-assets.githubusercontent.com"
+          ],
+          "release": {
+            "repo": "supabase/cli",
+            "asset": "supabase_{version}_linux_{arch}.tar.gz",
+            "checksums": "checksums.txt",
+            "binary": "supabase"
+          }
+        }
+      },
+      "signIn": "later",
+      "updates": "driver"
     },
     {
-      "id": "git-lfs", "name": "Git LFS", "category": "git",
+      "id": "git-lfs",
+      "name": "Git LFS",
+      "category": "git",
       "summary": "Keeps large files such as models, media and datasets out of the Git history.",
-      "publisher": { "name": "Git LFS", "url": "https://git-lfs.com" },
-      "homepage": "https://git-lfs.com", "license": "MIT",
-      "keywords": ["git", "lfs", "large files", "models", "datasets"],
-      "detect": { "command": "git-lfs", "version": ["git-lfs", "--version"] },
-      "platforms": { "wsl": { "families": ["apt"], "driver": "apt", "account": "root",
-        "packages": ["git-lfs"] } },
-      "signIn": "none", "updates": "driver"
+      "publisher": {
+        "name": "Git LFS",
+        "url": "https://git-lfs.com"
+      },
+      "homepage": "https://git-lfs.com",
+      "license": "MIT",
+      "keywords": [
+        "git",
+        "lfs",
+        "large files",
+        "models",
+        "datasets"
+      ],
+      "detect": {
+        "command": "git-lfs",
+        "version": [
+          "git-lfs",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "families": [
+            "apt"
+          ],
+          "driver": "apt",
+          "account": "root",
+          "packages": [
+            "git-lfs"
+          ]
+        }
+      },
+      "signIn": "none",
+      "updates": "driver"
     },
     {
-      "id": "ripgrep", "name": "ripgrep", "category": "dev-tools",
+      "id": "ripgrep",
+      "name": "ripgrep",
+      "category": "dev-tools",
       "summary": "Searches file contents fast and skips what .gitignore hides; agent CLIs use it to find code.",
-      "publisher": { "name": "Andrew Gallant", "url": "https://github.com/BurntSushi" },
-      "homepage": "https://github.com/BurntSushi/ripgrep", "license": "MIT OR Unlicense",
-      "keywords": ["rg", "grep", "search", "code search"],
-      "detect": { "command": "rg", "version": ["rg", "--version"] },
-      "platforms": { "wsl": { "families": ["apt"], "driver": "apt", "account": "root",
-        "packages": ["ripgrep"] } },
-      "signIn": "none", "updates": "driver"
+      "publisher": {
+        "name": "Andrew Gallant",
+        "url": "https://github.com/BurntSushi"
+      },
+      "homepage": "https://github.com/BurntSushi/ripgrep",
+      "license": "MIT OR Unlicense",
+      "keywords": [
+        "rg",
+        "grep",
+        "search",
+        "code search"
+      ],
+      "detect": {
+        "command": "rg",
+        "version": [
+          "rg",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "families": [
+            "apt"
+          ],
+          "driver": "apt",
+          "account": "root",
+          "packages": [
+            "ripgrep"
+          ]
+        },
+        "windows": {
+          "driver": "winget",
+          "id": "BurntSushi.ripgrep.MSVC",
+          "scope": "user"
+        }
+      },
+      "signIn": "none",
+      "updates": "driver"
     },
     {
-      "id": "jq", "name": "jq", "category": "dev-tools",
+      "id": "jq",
+      "name": "jq",
+      "category": "dev-tools",
       "summary": "Reads, filters and reshapes JSON on the command line.",
-      "publisher": { "name": "jqlang", "url": "https://jqlang.org" },
-      "homepage": "https://jqlang.org", "license": "MIT",
-      "keywords": ["json", "filter", "query"],
-      "detect": { "command": "jq", "version": ["jq", "--version"] },
-      "platforms": { "wsl": { "families": ["apt"], "driver": "apt", "account": "root",
-        "packages": ["jq"] } },
-      "signIn": "none", "updates": "driver"
+      "publisher": {
+        "name": "jqlang",
+        "url": "https://jqlang.org"
+      },
+      "homepage": "https://jqlang.org",
+      "license": "MIT",
+      "keywords": [
+        "json",
+        "filter",
+        "query"
+      ],
+      "detect": {
+        "command": "jq",
+        "version": [
+          "jq",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "families": [
+            "apt"
+          ],
+          "driver": "apt",
+          "account": "root",
+          "packages": [
+            "jq"
+          ]
+        },
+        "windows": {
+          "driver": "winget",
+          "id": "jqlang.jq",
+          "scope": "user"
+        }
+      },
+      "signIn": "none",
+      "updates": "driver"
     },
     {
-      "id": "sqlite3", "name": "SQLite", "category": "dev-tools",
+      "id": "sqlite3",
+      "name": "SQLite",
+      "category": "data",
       "summary": "Opens and queries SQLite database files from the terminal.",
-      "publisher": { "name": "SQLite", "url": "https://sqlite.org" },
-      "homepage": "https://sqlite.org/cli.html", "license": "blessing",
-      "keywords": ["sqlite", "database", "sql"],
-      "detect": { "command": "sqlite3", "version": ["sqlite3", "--version"] },
-      "platforms": { "wsl": { "families": ["apt"], "driver": "apt", "account": "root",
-        "packages": ["sqlite3"] } },
-      "signIn": "none", "updates": "driver"
+      "publisher": {
+        "name": "SQLite",
+        "url": "https://sqlite.org"
+      },
+      "homepage": "https://sqlite.org/cli.html",
+      "license": "blessing",
+      "keywords": [
+        "sqlite",
+        "database",
+        "sql"
+      ],
+      "detect": {
+        "command": "sqlite3",
+        "version": [
+          "sqlite3",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "families": [
+            "apt"
+          ],
+          "driver": "apt",
+          "account": "root",
+          "packages": [
+            "sqlite3"
+          ]
+        }
+      },
+      "signIn": "none",
+      "updates": "driver"
     },
     {
-      "id": "build-essential", "name": "Build tools", "category": "dev-tools",
+      "id": "libreoffice",
+      "name": "LibreOffice",
+      "category": "documents",
+      "summary": "Opens and converts Word, Excel and PowerPoint files, and turns them into PDF.",
+      "publisher": {
+        "name": "The Document Foundation",
+        "url": "https://www.documentfoundation.org"
+      },
+      "homepage": "https://www.libreoffice.org",
+      "license": "MPL-2.0",
+      "keywords": [
+        "office",
+        "word",
+        "excel",
+        "powerpoint",
+        "pdf",
+        "writer",
+        "calc",
+        "impress",
+        "soffice"
+      ],
+      "detect": {
+        "command": "soffice",
+        "version": [
+          "soffice",
+          "--version"
+        ],
+        "pattern": "LibreOffice ([0-9]+\\.[0-9]+\\.[0-9]+)"
+      },
+      "platforms": {
+        "wsl": {
+          "families": [
+            "apt"
+          ],
+          "driver": "apt",
+          "account": "root",
+          "noRecommends": true,
+          "packages": [
+            "libreoffice-writer",
+            "libreoffice-calc",
+            "libreoffice-impress",
+            "libreoffice-draw",
+            "libreoffice-core",
+            "libreoffice-base-core",
+            "libreoffice-common"
+          ]
+        },
+        "windows": {
+          "driver": "winget",
+          "id": "TheDocumentFoundation.LibreOffice",
+          "scope": "machine"
+        }
+      },
+      "signIn": "none",
+      "updates": "driver",
+      "tier": "official",
+      "recommended": true,
+      "approxSizeMB": 500,
+      "updatedAt": "2026-11-26",
+      "agent": {
+        "summary": "Converts office documents to PDF or to another office format with the layout kept, without opening a window.",
+        "commands": [
+          "soffice --headless --convert-to pdf --outdir out report.docx",
+          "soffice --headless --convert-to xlsx data.ods",
+          "soffice --headless --convert-to docx notes.odt"
+        ],
+        "formats": [
+          ".docx",
+          ".doc",
+          ".xlsx",
+          ".xls",
+          ".pptx",
+          ".ppt",
+          ".odt",
+          ".ods",
+          ".odp",
+          ".rtf",
+          ".csv",
+          ".pdf"
+        ],
+        "caveats": "One conversion at a time per user profile: a second soffice started while one runs waits or exits. Installed without recommended extras, so fonts the document names may be replaced.",
+        "extension": "cognix-office"
+      }
+    },
+    {
+      "id": "pandoc",
+      "name": "Pandoc",
+      "category": "documents",
+      "summary": "Converts between Markdown, Word, HTML, EPUB and LaTeX, and writes PowerPoint.",
+      "publisher": {
+        "name": "John MacFarlane",
+        "url": "https://github.com/jgm"
+      },
+      "homepage": "https://pandoc.org",
+      "license": "GPL-2.0-or-later",
+      "keywords": [
+        "markdown",
+        "word",
+        "docx",
+        "html",
+        "epub",
+        "latex",
+        "convert"
+      ],
+      "detect": {
+        "command": "pandoc",
+        "version": [
+          "pandoc",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "families": [
+            "apt"
+          ],
+          "driver": "apt",
+          "account": "root",
+          "packages": [
+            "pandoc"
+          ]
+        },
+        "windows": {
+          "driver": "winget",
+          "id": "JohnMacFarlane.Pandoc",
+          "scope": "user"
+        }
+      },
+      "signIn": "none",
+      "updates": "driver",
+      "tier": "official",
+      "recommended": true,
+      "updatedAt": "2026-11-26",
+      "agent": {
+        "summary": "Turns Markdown an agent writes into Word, HTML or slides, and Word files into Markdown it can read.",
+        "commands": [
+          "pandoc notes.md -o notes.docx",
+          "pandoc report.docx -t gfm -o report.md",
+          "pandoc slides.md -o slides.pptx"
+        ],
+        "formats": [
+          ".md",
+          ".docx",
+          ".html",
+          ".epub",
+          ".tex",
+          ".odt",
+          ".rtf",
+          ".pptx"
+        ],
+        "caveats": "Never reads PDF. The Linux distribution's version decides what it reads: reading .pptx needs Pandoc 3.8.3 or later, newer than Ubuntu 24.04 ships; convert it with LibreOffice first."
+      }
+    },
+    {
+      "id": "poppler",
+      "name": "Poppler utilities",
+      "category": "documents",
+      "summary": "Pulls text, images and details out of PDF files, and joins them.",
+      "publisher": {
+        "name": "freedesktop.org",
+        "url": "https://www.freedesktop.org"
+      },
+      "homepage": "https://poppler.freedesktop.org",
+      "license": "GPL-2.0-or-later",
+      "keywords": [
+        "pdf",
+        "pdftotext",
+        "pdfinfo",
+        "pdfimages",
+        "pdftoppm",
+        "pdfunite",
+        "extract"
+      ],
+      "detect": {
+        "command": "pdftotext",
+        "version": [
+          "pdftotext",
+          "-v"
+        ],
+        "pattern": "pdftotext version ([0-9]+\\.[0-9]+\\.[0-9]+)"
+      },
+      "platforms": {
+        "wsl": {
+          "families": [
+            "apt"
+          ],
+          "driver": "apt",
+          "account": "root",
+          "packages": [
+            "poppler-utils"
+          ]
+        }
+      },
+      "signIn": "none",
+      "updates": "driver",
+      "tier": "official",
+      "updatedAt": "2026-11-26",
+      "agent": {
+        "summary": "Reads the text of a PDF with its layout, renders pages as images for OCR, and merges PDFs.",
+        "commands": [
+          "pdftotext -layout invoice.pdf -",
+          "pdfinfo contract.pdf",
+          "pdftoppm -r 300 -png scan.pdf page",
+          "pdfunite a.pdf b.pdf both.pdf"
+        ],
+        "formats": [
+          ".pdf",
+          ".png",
+          ".txt"
+        ],
+        "caveats": "A scanned PDF has no text to extract: render its pages with pdftoppm and read them with Tesseract."
+      }
+    },
+    {
+      "id": "qpdf",
+      "name": "QPDF",
+      "category": "documents",
+      "summary": "Splits, merges, reorders and decrypts PDF files without changing their content.",
+      "publisher": {
+        "name": "QPDF",
+        "url": "https://github.com/qpdf"
+      },
+      "homepage": "https://qpdf.sourceforge.io",
+      "license": "Apache-2.0",
+      "keywords": [
+        "pdf",
+        "split",
+        "merge",
+        "pages",
+        "decrypt",
+        "linearize"
+      ],
+      "detect": {
+        "command": "qpdf",
+        "version": [
+          "qpdf",
+          "--version"
+        ],
+        "pattern": "qpdf version ([0-9]+\\.[0-9]+\\.[0-9]+)"
+      },
+      "platforms": {
+        "wsl": {
+          "families": [
+            "apt"
+          ],
+          "driver": "apt",
+          "account": "root",
+          "packages": [
+            "qpdf"
+          ]
+        },
+        "windows": {
+          "driver": "winget",
+          "id": "QPDF.QPDF",
+          "scope": "machine"
+        }
+      },
+      "signIn": "none",
+      "updates": "driver",
+      "tier": "official",
+      "updatedAt": "2026-11-26",
+      "agent": {
+        "summary": "Takes pages out of a PDF, joins PDFs and removes a password the person knows, losslessly.",
+        "commands": [
+          "qpdf in.pdf --pages . 1-5 -- first-five.pdf",
+          "qpdf --empty --pages a.pdf b.pdf -- joined.pdf",
+          "qpdf --show-npages in.pdf"
+        ],
+        "formats": [
+          ".pdf"
+        ],
+        "caveats": "Decrypting needs the password (--password=...); QPDF does not guess one."
+      }
+    },
+    {
+      "id": "tesseract",
+      "name": "Tesseract OCR",
+      "category": "documents",
+      "summary": "Reads text out of scans and photos, offline, in English and Portuguese.",
+      "publisher": {
+        "name": "Tesseract OCR",
+        "url": "https://github.com/tesseract-ocr"
+      },
+      "homepage": "https://tesseract-ocr.github.io",
+      "license": "Apache-2.0",
+      "keywords": [
+        "ocr",
+        "scan",
+        "image",
+        "text",
+        "recognition",
+        "portuguese"
+      ],
+      "detect": {
+        "command": "tesseract",
+        "version": [
+          "tesseract",
+          "--version"
+        ],
+        "pattern": "tesseract v?([0-9]+\\.[0-9]+\\.[0-9]+)"
+      },
+      "platforms": {
+        "wsl": {
+          "families": [
+            "apt"
+          ],
+          "driver": "apt",
+          "account": "root",
+          "packages": [
+            "tesseract-ocr",
+            "tesseract-ocr-por"
+          ],
+          "remove": {
+            "packages": [
+              "tesseract-ocr"
+            ]
+          }
+        },
+        "windows": {
+          "driver": "winget",
+          "id": "tesseract-ocr.tesseract",
+          "scope": "machine"
+        }
+      },
+      "signIn": "none",
+      "updates": "driver",
+      "tier": "official",
+      "updatedAt": "2026-11-26",
+      "agent": {
+        "summary": "Turns an image of text (a scanned page, a receipt, a screenshot) into plain text or a searchable PDF.",
+        "commands": [
+          "tesseract scan.png out -l por",
+          "tesseract page.png - -l eng",
+          "tesseract scan.png searchable -l por pdf"
+        ],
+        "formats": [
+          ".png",
+          ".jpg",
+          ".tif",
+          ".pdf",
+          ".txt"
+        ],
+        "caveats": "Reads images, not PDFs: render a scanned PDF's pages first (pdftoppm -r 300). On Linux, English and Portuguese come with it; another language needs its own package, such as tesseract-ocr-fra for French."
+      }
+    },
+    {
+      "id": "miller",
+      "name": "Miller",
+      "category": "data",
+      "summary": "Cleans, joins, sorts and sums large CSV, TSV and JSON files, keeping their headers.",
+      "publisher": {
+        "name": "John Kerl",
+        "url": "https://github.com/johnkerl"
+      },
+      "homepage": "https://miller.readthedocs.io",
+      "license": "BSD-2-Clause",
+      "keywords": [
+        "mlr",
+        "csv",
+        "tsv",
+        "json",
+        "clean",
+        "join",
+        "sort"
+      ],
+      "detect": {
+        "command": "mlr",
+        "version": [
+          "mlr",
+          "--version"
+        ],
+        "pattern": "mlr v?([0-9]+\\.[0-9]+\\.[0-9]+)"
+      },
+      "platforms": {
+        "wsl": {
+          "families": [
+            "apt"
+          ],
+          "driver": "apt",
+          "account": "root",
+          "packages": [
+            "miller"
+          ]
+        }
+      },
+      "signIn": "none",
+      "updates": "driver",
+      "tier": "official",
+      "recommended": true,
+      "updatedAt": "2026-11-26",
+      "agent": {
+        "summary": "Streams tabular files of any size by column name: filter, group, sum, join and convert between CSV and JSON.",
+        "commands": [
+          "mlr --icsv --opprint stats1 -a sum -f revenue -g region sales.csv",
+          "mlr --icsv --ojson cat sales.csv",
+          "mlr --csv filter '$revenue > 1000' sales.csv"
+        ],
+        "formats": [
+          ".csv",
+          ".tsv",
+          ".json",
+          ".txt"
+        ],
+        "caveats": "The command is mlr. Verbs and flags changed in Miller 6; examples written for Miller 5 may fail."
+      }
+    },
+    {
+      "id": "build-essential",
+      "name": "Build tools",
+      "category": "dev-tools",
       "summary": "gcc, g++ and make, which packages with native code need to build.",
-      "publisher": { "name": "GNU Project", "url": "https://www.gnu.org" },
-      "homepage": "https://gcc.gnu.org", "license": "GPL-3.0-or-later",
-      "keywords": ["gcc", "g++", "make", "compiler", "build", "native"],
-      "detect": { "command": "gcc", "version": ["gcc", "--version"] },
-      "platforms": { "wsl": { "families": ["apt"], "driver": "apt", "account": "root",
-        "packages": ["build-essential"] } },
-      "signIn": "none", "updates": "driver"
+      "publisher": {
+        "name": "GNU Project",
+        "url": "https://www.gnu.org"
+      },
+      "homepage": "https://gcc.gnu.org",
+      "license": "GPL-3.0-or-later",
+      "keywords": [
+        "gcc",
+        "g++",
+        "make",
+        "compiler",
+        "build",
+        "native"
+      ],
+      "detect": {
+        "command": "gcc",
+        "version": [
+          "gcc",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "families": [
+            "apt"
+          ],
+          "driver": "apt",
+          "account": "root",
+          "packages": [
+            "build-essential"
+          ]
+        }
+      },
+      "signIn": "none",
+      "updates": "driver"
     },
     {
-      "id": "python-pip", "name": "Python pip and venv", "category": "packages",
+      "id": "python-pip",
+      "name": "Python pip and venv",
+      "category": "packages",
       "summary": "Installs Python packages and makes virtual environments for the system Python.",
-      "publisher": { "name": "Python Packaging Authority", "url": "https://www.pypa.io" },
-      "homepage": "https://pip.pypa.io", "license": "MIT",
-      "keywords": ["python", "python3", "pip", "venv", "packages"],
-      "detect": { "command": "pip3", "version": ["pip3", "--version"] },
-      "platforms": { "wsl": { "families": ["apt"], "driver": "apt", "account": "root",
-        "packages": ["python3-pip", "python3-venv"] } },
-      "signIn": "none", "updates": "driver"
+      "publisher": {
+        "name": "Python Packaging Authority",
+        "url": "https://www.pypa.io"
+      },
+      "homepage": "https://pip.pypa.io",
+      "license": "MIT",
+      "keywords": [
+        "python",
+        "python3",
+        "pip",
+        "venv",
+        "packages"
+      ],
+      "detect": {
+        "command": "pip3",
+        "version": [
+          "pip3",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "families": [
+            "apt"
+          ],
+          "driver": "apt",
+          "account": "root",
+          "packages": [
+            "python3-pip",
+            "python3-venv"
+          ]
+        }
+      },
+      "signIn": "none",
+      "updates": "driver"
     },
     {
-      "id": "uv", "name": "uv", "category": "packages",
+      "id": "uv",
+      "name": "uv",
+      "category": "packages",
       "summary": "A fast Python package and project manager that also installs Python itself.",
-      "publisher": { "name": "Astral", "url": "https://astral.sh" },
-      "homepage": "https://docs.astral.sh/uv/", "license": "MIT OR Apache-2.0",
-      "keywords": ["python", "pip", "uvx", "packages", "venv"],
-      "detect": { "command": "uv", "version": ["uv", "--version"] },
-      "platforms": { "wsl": { "driver": "vendor-script", "account": "user",
-        "hosts": ["astral.sh"], "script": "https://astral.sh/uv/install.sh",
-        "env": { "UV_NO_MODIFY_PATH": "1" } } },
-      "signIn": "none", "updates": "vendor"
+      "publisher": {
+        "name": "Astral",
+        "url": "https://astral.sh"
+      },
+      "homepage": "https://docs.astral.sh/uv/",
+      "license": "MIT OR Apache-2.0",
+      "keywords": [
+        "python",
+        "pip",
+        "uvx",
+        "packages",
+        "venv"
+      ],
+      "detect": {
+        "command": "uv",
+        "version": [
+          "uv",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "vendor-script",
+          "account": "user",
+          "hosts": [
+            "astral.sh"
+          ],
+          "script": "https://astral.sh/uv/install.sh",
+          "env": {
+            "UV_NO_MODIFY_PATH": "1"
+          }
+        }
+      },
+      "signIn": "none",
+      "updates": "vendor"
     },
     {
-      "id": "pnpm", "name": "pnpm", "category": "packages",
+      "id": "pnpm",
+      "name": "pnpm",
+      "category": "packages",
       "summary": "A fast, disk-efficient package manager for JavaScript projects.",
-      "publisher": { "name": "pnpm", "url": "https://pnpm.io" },
-      "homepage": "https://pnpm.io", "license": "MIT",
-      "keywords": ["npm", "javascript", "node", "packages", "monorepo"],
-      "detect": { "command": "pnpm", "version": ["pnpm", "--version"] },
-      "platforms": { "wsl": { "driver": "npm-global", "account": "user", "package": "pnpm" } },
-      "dependsOn": ["nodejs"], "signIn": "none", "updates": "driver"
+      "publisher": {
+        "name": "pnpm",
+        "url": "https://pnpm.io"
+      },
+      "homepage": "https://pnpm.io",
+      "license": "MIT",
+      "keywords": [
+        "npm",
+        "javascript",
+        "node",
+        "packages",
+        "monorepo"
+      ],
+      "detect": {
+        "command": "pnpm",
+        "version": [
+          "pnpm",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "npm-global",
+          "account": "user",
+          "package": "pnpm"
+        }
+      },
+      "dependsOn": [
+        "nodejs"
+      ],
+      "signIn": "none",
+      "updates": "driver"
     },
     {
-      "id": "bun", "name": "Bun", "category": "runtime",
+      "id": "bun",
+      "name": "Bun",
+      "category": "runtime",
       "summary": "A JavaScript runtime, package manager and test runner in one fast binary.",
-      "publisher": { "name": "Oven", "url": "https://oven.sh" },
-      "homepage": "https://bun.sh", "license": "MIT",
-      "keywords": ["javascript", "typescript", "runtime", "bunx", "packages"],
-      "detect": { "command": "bun", "version": ["bun", "--version"] },
-      "platforms": { "wsl": { "driver": "npm-global", "account": "user", "package": "bun" } },
-      "dependsOn": ["nodejs"], "signIn": "none", "updates": "driver"
+      "publisher": {
+        "name": "Oven",
+        "url": "https://oven.sh"
+      },
+      "homepage": "https://bun.sh",
+      "license": "MIT",
+      "keywords": [
+        "javascript",
+        "typescript",
+        "runtime",
+        "bunx",
+        "packages"
+      ],
+      "detect": {
+        "command": "bun",
+        "version": [
+          "bun",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "npm-global",
+          "account": "user",
+          "package": "bun"
+        }
+      },
+      "dependsOn": [
+        "nodejs"
+      ],
+      "signIn": "none",
+      "updates": "driver"
     },
     {
-      "id": "deno", "name": "Deno", "category": "runtime",
+      "id": "deno",
+      "name": "Deno",
+      "category": "runtime",
       "summary": "A JavaScript and TypeScript runtime with permissions and tools built in.",
-      "publisher": { "name": "Deno Land", "url": "https://deno.com" },
-      "homepage": "https://docs.deno.com", "license": "MIT",
-      "keywords": ["javascript", "typescript", "runtime"],
-      "detect": { "command": "deno", "version": ["deno", "--version"] },
-      "platforms": { "wsl": { "driver": "npm-global", "account": "user", "package": "deno" } },
-      "dependsOn": ["nodejs"], "signIn": "none", "updates": "driver"
+      "publisher": {
+        "name": "Deno Land",
+        "url": "https://deno.com"
+      },
+      "homepage": "https://docs.deno.com",
+      "license": "MIT",
+      "keywords": [
+        "javascript",
+        "typescript",
+        "runtime"
+      ],
+      "detect": {
+        "command": "deno",
+        "version": [
+          "deno",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "npm-global",
+          "account": "user",
+          "package": "deno"
+        }
+      },
+      "dependsOn": [
+        "nodejs"
+      ],
+      "signIn": "none",
+      "updates": "driver"
     },
     {
-      "id": "ffmpeg", "name": "FFmpeg", "category": "media",
+      "id": "ffmpeg",
+      "name": "FFmpeg",
+      "category": "media",
       "summary": "Converts, cuts and records audio and video from the command line.",
-      "publisher": { "name": "FFmpeg", "url": "https://ffmpeg.org" },
-      "homepage": "https://ffmpeg.org", "license": "GPL-2.0-or-later",
-      "keywords": ["video", "audio", "convert", "media", "transcode"],
-      "detect": { "command": "ffmpeg", "version": ["ffmpeg", "-version"] },
-      "platforms": { "wsl": { "families": ["apt"], "driver": "apt", "account": "root",
-        "packages": ["ffmpeg"] } },
-      "signIn": "none", "updates": "driver"
+      "publisher": {
+        "name": "FFmpeg",
+        "url": "https://ffmpeg.org"
+      },
+      "homepage": "https://ffmpeg.org",
+      "license": "GPL-2.0-or-later",
+      "keywords": [
+        "video",
+        "audio",
+        "convert",
+        "media",
+        "transcode"
+      ],
+      "detect": {
+        "command": "ffmpeg",
+        "version": [
+          "ffmpeg",
+          "-version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "families": [
+            "apt"
+          ],
+          "driver": "apt",
+          "account": "root",
+          "packages": [
+            "ffmpeg"
+          ]
+        }
+      },
+      "signIn": "none",
+      "updates": "driver"
     },
-
     {
-      "id": "tmux", "name": "tmux", "category": "runtime", "required": true,
+      "id": "docker-desktop",
+      "name": "Docker Desktop",
+      "category": "containers",
+      "summary": "Docker's app for Windows: containers, Compose and Kubernetes, with WSL.",
+      "publisher": {
+        "name": "Docker Inc.",
+        "url": "https://www.docker.com"
+      },
+      "homepage": "https://docs.docker.com/desktop/",
+      "license": "Proprietary",
+      "keywords": [
+        "docker",
+        "containers",
+        "compose",
+        "windows"
+      ],
+      "platforms": {
+        "windows": {
+          "driver": "winget",
+          "id": "Docker.DockerDesktop",
+          "scope": "machine"
+        }
+      },
+      "signIn": "later",
+      "updates": "driver"
+    },
+    {
+      "id": "vscode",
+      "name": "Visual Studio Code",
+      "category": "dev-tools",
+      "summary": "Microsoft's code editor, with WSL and remote folders.",
+      "publisher": {
+        "name": "Microsoft",
+        "url": "https://www.microsoft.com"
+      },
+      "homepage": "https://code.visualstudio.com",
+      "license": "Proprietary",
+      "keywords": [
+        "editor",
+        "code",
+        "ide",
+        "windows"
+      ],
+      "platforms": {
+        "windows": {
+          "driver": "winget",
+          "id": "Microsoft.VisualStudioCode",
+          "scope": "user"
+        }
+      },
+      "signIn": "none",
+      "updates": "driver"
+    },
+    {
+      "id": "windows-terminal",
+      "name": "Windows Terminal",
+      "category": "dev-tools",
+      "summary": "Microsoft's terminal app for PowerShell, Command Prompt and WSL.",
+      "publisher": {
+        "name": "Microsoft",
+        "url": "https://www.microsoft.com"
+      },
+      "homepage": "https://learn.microsoft.com/windows/terminal/",
+      "license": "MIT",
+      "keywords": [
+        "terminal",
+        "console",
+        "shell",
+        "windows"
+      ],
+      "platforms": {
+        "windows": {
+          "driver": "winget",
+          "id": "Microsoft.WindowsTerminal",
+          "scope": "user"
+        }
+      },
+      "signIn": "none",
+      "updates": "driver"
+    },
+    {
+      "id": "powershell",
+      "name": "PowerShell 7",
+      "category": "dev-tools",
+      "summary": "Microsoft's cross-platform shell and scripting language.",
+      "publisher": {
+        "name": "Microsoft",
+        "url": "https://www.microsoft.com"
+      },
+      "homepage": "https://learn.microsoft.com/powershell/",
+      "license": "MIT",
+      "keywords": [
+        "pwsh",
+        "shell",
+        "scripting",
+        "windows"
+      ],
+      "platforms": {
+        "windows": {
+          "driver": "winget",
+          "id": "Microsoft.PowerShell",
+          "scope": "machine"
+        }
+      },
+      "signIn": "none",
+      "updates": "driver"
+    },
+    {
+      "id": "python",
+      "name": "Python 3.13",
+      "category": "runtime",
+      "summary": "The Python language and its launcher, py, for Windows.",
+      "publisher": {
+        "name": "Python Software Foundation",
+        "url": "https://www.python.org"
+      },
+      "homepage": "https://www.python.org/downloads/windows/",
+      "license": "PSF-2.0",
+      "keywords": [
+        "python",
+        "py",
+        "pip",
+        "windows"
+      ],
+      "platforms": {
+        "windows": {
+          "driver": "winget",
+          "id": "Python.Python.3.13",
+          "scope": "user"
+        }
+      },
+      "signIn": "none",
+      "updates": "driver"
+    },
+    {
+      "id": "tmux",
+      "name": "tmux",
+      "category": "runtime",
+      "required": true,
       "summary": "Keeps every agent's terminal running when no window is open.",
-      "publisher": { "name": "tmux", "url": "https://github.com/tmux/tmux" },
-      "homepage": "https://github.com/tmux/tmux/wiki", "license": "ISC",
-      "keywords": ["tmux", "terminal", "multiplexer"],
-      "detect": { "command": "tmux", "version": ["tmux", "-V"], "pattern": "([0-9]+\\.[0-9]+[a-z]?)" },
-      "platforms": { "wsl": { "driver": "setup" } }
+      "publisher": {
+        "name": "tmux",
+        "url": "https://github.com/tmux/tmux"
+      },
+      "homepage": "https://github.com/tmux/tmux/wiki",
+      "license": "ISC",
+      "keywords": [
+        "tmux",
+        "terminal",
+        "multiplexer"
+      ],
+      "detect": {
+        "command": "tmux",
+        "version": [
+          "tmux",
+          "-V"
+        ],
+        "pattern": "([0-9]+\\.[0-9]+[a-z]?)"
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "setup"
+        }
+      }
     },
     {
-      "id": "git", "name": "Git", "category": "git", "required": true,
+      "id": "git",
+      "name": "Git",
+      "category": "git",
+      "required": true,
       "summary": "Version control for every workspace.",
-      "publisher": { "name": "The Git project", "url": "https://git-scm.com" },
-      "homepage": "https://git-scm.com", "license": "GPL-2.0-only",
-      "keywords": ["git", "version control"],
-      "detect": { "command": "git", "version": ["git", "--version"] },
-      "platforms": { "wsl": { "driver": "setup" } }
+      "publisher": {
+        "name": "The Git project",
+        "url": "https://git-scm.com"
+      },
+      "homepage": "https://git-scm.com",
+      "license": "GPL-2.0-only",
+      "keywords": [
+        "git",
+        "version control"
+      ],
+      "detect": {
+        "command": "git",
+        "version": [
+          "git",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "setup"
+        },
+        "windows": {
+          "driver": "winget",
+          "id": "Git.Git",
+          "scope": "user"
+        }
+      }
     },
     {
-      "id": "curl", "name": "curl", "category": "runtime", "required": true,
+      "id": "curl",
+      "name": "curl",
+      "category": "runtime",
+      "required": true,
       "summary": "Downloads what installs and updates need.",
-      "publisher": { "name": "curl", "url": "https://curl.se" },
-      "homepage": "https://curl.se", "license": "curl",
-      "keywords": ["curl", "download", "http"],
-      "detect": { "command": "curl", "version": ["curl", "--version"] },
-      "platforms": { "wsl": { "driver": "setup" } }
+      "publisher": {
+        "name": "curl",
+        "url": "https://curl.se"
+      },
+      "homepage": "https://curl.se",
+      "license": "curl",
+      "keywords": [
+        "curl",
+        "download",
+        "http"
+      ],
+      "detect": {
+        "command": "curl",
+        "version": [
+          "curl",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "setup"
+        }
+      }
     },
     {
-      "id": "nodejs", "name": "Node.js", "category": "runtime", "required": true,
+      "id": "nodejs",
+      "name": "Node.js",
+      "category": "runtime",
       "summary": "Runs the agent CLIs and tools that ship as npm packages.",
-      "publisher": { "name": "OpenJS Foundation", "url": "https://openjsf.org" },
-      "homepage": "https://nodejs.org", "license": "MIT",
-      "keywords": ["node", "nodejs", "npm", "javascript"],
-      "detect": { "command": "node", "version": ["node", "--version"] },
-      "platforms": { "wsl": { "driver": "setup" } }
+      "publisher": {
+        "name": "OpenJS Foundation",
+        "url": "https://openjsf.org"
+      },
+      "homepage": "https://nodejs.org",
+      "license": "MIT",
+      "keywords": [
+        "node",
+        "nodejs",
+        "npm",
+        "npx",
+        "javascript",
+        "lts"
+      ],
+      "detect": {
+        "command": "node",
+        "version": [
+          "node",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "node-dist",
+          "account": "user",
+          "hosts": [
+            "nodejs.org"
+          ],
+          "dist": {
+            "version": "24.22.2",
+            "sha256": {
+              "linux-x64": "361718c444e49af2ca5a110c83ba6a8901143f23ab285ebbef0341f391f482a9",
+              "linux-arm64": "95c264150aceb7f3437a29fd6984924f5f8d1511ea3cbd6c508b83f6c555dae2"
+            }
+          }
+        }
+      },
+      "signIn": "none",
+      "updates": "driver"
     },
     {
-      "id": "mkcert", "name": "mkcert", "category": "runtime", "required": true,
+      "id": "netlify",
+      "name": "Netlify CLI",
+      "category": "cloud",
+      "summary": "Build, preview and deploy Netlify sites and functions from the terminal.",
+      "publisher": {
+        "name": "Netlify",
+        "url": "https://www.netlify.com"
+      },
+      "homepage": "https://docs.netlify.com/cli/get-started/",
+      "license": "MIT",
+      "keywords": [
+        "netlify",
+        "deploy",
+        "hosting",
+        "functions"
+      ],
+      "detect": {
+        "command": "netlify",
+        "version": [
+          "netlify",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "npm-global",
+          "account": "user",
+          "package": "netlify-cli",
+          "env": {
+            "NETLIFY_TELEMETRY_DISABLED": "1"
+          }
+        }
+      },
+      "dependsOn": [
+        "nodejs"
+      ],
+      "signIn": "later",
+      "updates": "driver"
+    },
+    {
+      "id": "mkcert",
+      "name": "mkcert",
+      "category": "runtime",
+      "required": true,
       "summary": "Makes the local certificate the app and the phone trust.",
-      "publisher": { "name": "Filippo Valsorda", "url": "https://github.com/FiloSottile" },
-      "homepage": "https://github.com/FiloSottile/mkcert", "license": "BSD-3-Clause",
-      "keywords": ["mkcert", "certificate", "https", "tls"],
-      "detect": { "command": "mkcert", "version": ["mkcert", "-version"] },
-      "platforms": { "wsl": { "driver": "setup" } }
+      "publisher": {
+        "name": "Filippo Valsorda",
+        "url": "https://github.com/FiloSottile"
+      },
+      "homepage": "https://github.com/FiloSottile/mkcert",
+      "license": "BSD-3-Clause",
+      "keywords": [
+        "mkcert",
+        "certificate",
+        "https",
+        "tls"
+      ],
+      "detect": {
+        "command": "mkcert",
+        "version": [
+          "mkcert",
+          "-version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "setup"
+        }
+      }
+    },
+    {
+      "id": "typst",
+      "name": "Typst",
+      "category": "documents",
+      "summary": "Typesets reports and proposals written as plain text into PDF, in milliseconds.",
+      "publisher": {
+        "name": "Typst",
+        "url": "https://typst.app"
+      },
+      "homepage": "https://typst.app",
+      "license": "Apache-2.0",
+      "keywords": [
+        "pdf",
+        "typesetting",
+        "report",
+        "latex",
+        "document"
+      ],
+      "detect": {
+        "command": "typst",
+        "version": [
+          "typst",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "github-release",
+          "account": "user",
+          "hosts": [
+            "github.com",
+            "objects.githubusercontent.com",
+            "release-assets.githubusercontent.com"
+          ],
+          "release": {
+            "repo": "typst/typst",
+            "asset": "typst-{target}.tar.xz",
+            "binary": "typst",
+            "version": "0.15.1",
+            "path": "typst-{target}/typst",
+            "targets": {
+              "amd64": "x86_64-unknown-linux-musl",
+              "arm64": "aarch64-unknown-linux-musl"
+            },
+            "sha256": {
+              "amd64": "a6d077d0a95eed5a2eba715b2dae06be954f624ccbf85758a03f389ded33118c",
+              "arm64": "5aa8d74a3d906e60ea12a66ac2f37f8eef1b14cbad7182a745e393a10c23dcee"
+            }
+          }
+        },
+        "windows": {
+          "driver": "winget",
+          "id": "Typst.Typst",
+          "scope": "user"
+        }
+      },
+      "signIn": "none",
+      "updates": "driver",
+      "tier": "official",
+      "updatedAt": "2026-11-26",
+      "agent": {
+        "summary": "Writes a PDF from a .typ file an agent generates: headings, tables and numbers laid out with fonts it carries.",
+        "commands": [
+          "typst compile report.typ report.pdf",
+          "typst compile report.typ page-{p}.png",
+          "typst fonts"
+        ],
+        "formats": [
+          ".typ",
+          ".pdf",
+          ".svg",
+          ".png"
+        ],
+        "caveats": "Typst's own markup, not LaTeX or Markdown. Images and data files a document reads must sit under the folder it compiles from."
+      }
+    },
+    {
+      "id": "duckdb",
+      "name": "DuckDB CLI",
+      "category": "data",
+      "summary": "Runs fast SQL over CSV, Parquet, JSON and Excel files without loading them into a database.",
+      "publisher": {
+        "name": "DuckDB Foundation",
+        "url": "https://duckdb.org"
+      },
+      "homepage": "https://duckdb.org",
+      "license": "MIT",
+      "keywords": [
+        "sql",
+        "csv",
+        "parquet",
+        "json",
+        "analytics",
+        "query",
+        "spreadsheet"
+      ],
+      "detect": {
+        "command": "duckdb",
+        "version": [
+          "duckdb",
+          "--version"
+        ]
+      },
+      "platforms": {
+        "wsl": {
+          "driver": "github-release",
+          "account": "user",
+          "hosts": [
+            "github.com",
+            "objects.githubusercontent.com",
+            "release-assets.githubusercontent.com"
+          ],
+          "release": {
+            "repo": "duckdb/duckdb",
+            "asset": "duckdb-cli-linux-{arch}.tar.gz",
+            "binary": "duckdb",
+            "version": "2.0.1",
+            "sha256": {
+              "amd64": "b676268be4d39e4e41a904442c9796c9914e645cc085c7505f048f2c992b5eca",
+              "arm64": "84e37891fcc45c887e30220f51a4914995cd8174139e87f8efd311ac83c956a7"
+            }
+          }
+        },
+        "windows": {
+          "driver": "winget",
+          "id": "DuckDB.cli",
+          "scope": "user"
+        }
+      },
+      "signIn": "none",
+      "updates": "driver",
+      "tier": "official",
+      "recommended": true,
+      "updatedAt": "2026-11-26",
+      "agent": {
+        "summary": "Answers questions about data files with SQL and writes summaries back as CSV or Parquet.",
+        "commands": [
+          "duckdb -c \"SELECT region, SUM(revenue) FROM 'sales.csv' GROUP BY 1\"",
+          "duckdb -c \"COPY (SELECT * FROM 'sales.csv') TO 'sales.parquet' (FORMAT PARQUET)\"",
+          "duckdb -c \"INSTALL excel; SELECT * FROM 'report.xlsx'\""
+        ],
+        "formats": [
+          ".csv",
+          ".parquet",
+          ".json",
+          ".xlsx",
+          ".sqlite",
+          ".db"
+        ],
+        "caveats": "Excel files need DuckDB's excel extension: run INSTALL excel; once, which downloads it from DuckDB's extension server. Without a connection, convert the sheet to CSV first."
+      }
+    }
+  ],
+  "bundles": [
+    {
+      "id": "office-pdf-kit",
+      "name": "Office and PDF kit",
+      "area": "documents",
+      "summary": "Convert Word, Excel and PowerPoint files, and pull text and pages out of PDFs and scans.",
+      "items": [
+        "libreoffice",
+        "pandoc",
+        "poppler",
+        "qpdf",
+        "tesseract",
+        "typst"
+      ]
+    },
+    {
+      "id": "data-kit",
+      "name": "Data and spreadsheets kit",
+      "area": "data",
+      "summary": "Clean, join and summarize CSV and JSON files, and query SQLite databases.",
+      "items": [
+        "duckdb",
+        "miller",
+        "sqlite3"
+      ]
     }
   ]
 }

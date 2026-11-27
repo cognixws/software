@@ -352,6 +352,7 @@ async function checkPinnedRelease(e, r) {
 
 async function checkSource(e) {
   const p = e.platforms.wsl;
+  if (!p) return; // Windows-only: winget checks the vendor's installer against Microsoft's manifest
   switch (p.driver) {
     case "npm-global": {
       const meta = await get(`https://registry.npmjs.org/${p.package.replace("/", "%2f")}/latest`, { json: true });
@@ -421,7 +422,7 @@ async function checkSource(e) {
 
 function checkApt(e) {
   const p = e.platforms.wsl;
-  if (p.driver !== "apt") return;
+  if (!p || p.driver !== "apt") return;
   for (const pkg of p.packages) {
     try {
       const out = execFileSync("apt-cache", ["show", "--no-all-versions", pkg], { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
