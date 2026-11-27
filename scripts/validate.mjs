@@ -26,10 +26,10 @@ const notes = [];
 const fail = (m) => problems.push(m);
 
 // ── the schema (mirror of internal/software/catalog.go) ───────────────────
-export const categories = ["agent-clis", "git", "containers", "cloud", "networking", "dev-tools", "packages", "runtime", "media"];
+export const categories = ["agent-clis", "documents", "data", "git", "containers", "cloud", "networking", "dev-tools", "packages", "runtime", "media"];
 const drivers = {
   cli: "user", "npm-global": "user", "github-release": "user", "vendor-script": "user",
-  apt: "root", "apt-repo": "root", setup: "user",
+  apt: "root", "apt-repo": "root", setup: "user", "node-dist": "user", "uv-tool": "user", winget: "windows",
 };
 const idRe = /^[a-z0-9][a-z0-9-]{0,39}$/;
 const commandRe = /^[a-z0-9][a-z0-9._-]{0,39}$/;
@@ -46,8 +46,37 @@ const families = new Set(["apt", "dnf", "pacman"]);
 const signIns = new Set(["", "gui", "later", "none"]);
 const updatesSet = new Set(["", "driver", "vendor"]);
 const afterSet = new Set(["docker-access"]);
-const entryKeys = new Set(["id", "name", "category", "required", "summary", "publisher", "homepage", "license", "keywords", "detect", "platforms", "dependsOn", "grants", "signIn", "updates"]);
-const platformKeys = new Set(["families", "driver", "account", "hosts", "package", "packages", "env", "repo", "release", "script", "conflicts", "after", "remove"]);
+const entryKeys = new Set(["id", "name", "category", "required", "summary", "publisher", "homepage", "license", "keywords", "detect", "platforms", "dependsOn", "grants", "signIn", "updates", "tier", "recommended", "approxSizeMB", "updatedAt", "agent"]);
+const platformKeys = new Set(["families", "driver", "account", "hosts", "package", "packages", "env", "repo", "release", "tool", "dist", "script", "conflicts", "after", "remove", "noRecommends", "id", "scope"]);
+const releaseKeys = new Set(["repo", "asset", "checksums", "binary", "version", "tag", "sha256", "targets", "path", "folder"]);
+const agentKeys = new Set(["summary", "commands", "formats", "caveats", "skill", "extension"]);
+const bundleKeys = new Set(["id", "name", "area", "summary", "items"]);
+// Schema v2 (ADR-0409 amendment of 2026-11-22), as internal/software/catalog.go reads it.
+const semverRe = /^[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]{1,20})?$/;
+const tagTmplRe = /^[A-Za-z0-9_.-]{0,20}\{version\}[A-Za-z0-9_.-]{0,20}$/;
+const targetRe = /^[A-Za-z0-9_.-]{1,64}$/;
+const archPathRe = /^[A-Za-z0-9_.{}+-]+(\/[A-Za-z0-9_.{}+-]+){0,7}$/;
+const sha256Re = /^[0-9a-f]{64}$/;
+const pypiRe = /^[A-Za-z0-9]([A-Za-z0-9._-]{0,98}[A-Za-z0-9])?$/;
+const pyVersionRe = /^[0-9]+(\.[0-9]+){1,3}((a|b|rc|\.post|\.dev)[0-9]{1,4})?$/;
+const extraRe = /^[a-z0-9][a-z0-9._-]{0,39}$/;
+const pythonRe = /^3\.[0-9]{1,2}$/;
+const formatRe = /^\.[a-z0-9]{1,10}$/;
+const dateRe = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
+const extIdRe = /^[a-z0-9][a-z0-9-]{0,63}$/;
+const wingetIdRe = /^[A-Za-z0-9][A-Za-z0-9-]{0,63}(\.[A-Za-z0-9][A-Za-z0-9+_-]{0,63}){1,3}$/;
+const distVersionRe = /^[0-9]+\.[0-9]+\.[0-9]+$/;
+const distPlatforms = ["linux-x64", "linux-arm64"];
+const unsupportedAssetRe = /\.(deb|rpm|apk|msi|exe|dmg|pkg|7z|rar|bz2|zst|tar|gz|xz|tbz2?|appimage|sig|asc|sha256|pem)$/i;
+const plain = (s, max) => typeof s === "string" && s.length <= max && !/[\u0000-\u001f\u007f]/.test(s);
+export const assetFormat = (asset) => {
+  const a = asset.toLowerCase();
+  if (a.endsWith(".tar.gz") || a.endsWith(".tgz")) return "tar.gz";
+  if (a.endsWith(".tar.xz") || a.endsWith(".txz")) return "tar.xz";
+  if (a.endsWith(".zip")) return "zip";
+  if (unsupportedAssetRe.test(a)) return "";
+  return "binary";
+};
 
 const envDenied = (k) => k === "PATH" || k === "HOME" || k === "NODE_OPTIONS" || k.startsWith("LD_") || k.startsWith("NPM_CONFIG_") || k.startsWith("npm_");
 const isHttps = (u) => {
@@ -69,6 +98,79 @@ const onHosts = (u, hosts) => {
 const str = (v) => typeof v === "string";
 const strs = (v) => v === undefined || (Array.isArray(v) && v.every(str));
 
+function validateRelease(r, bad) {
+  for (const k of Object.keys(r)) if (!releaseKeys.has(k)) bad(`unknown release field "${k}"`);
+  const format = assetFormat(r.asset);
+  if (!format) return bad("github-release opens .tar.gz, .tar.xz and .zip archives or a bare binary");
+  if (r.checksums !== undefined && !(str(r.checksums) && assetRe.test(r.checksums))) return bad("github-release checksums must be a file name");
+  const hasTarget = (r.asset + (r.checksums ?? "") + (r.path ?? "")).includes("{target}");
+  if (r.version === undefined) {
+    if (!r.checksums || format !== "tar.gz" || r.tag !== undefined || r.sha256 || r.targets || r.path !== undefined || r.folder || hasTarget) {
+      bad("github-release without a pinned version takes a .tar.gz, its checksums file and nothing more");
+    }
+    return;
+  }
+  if (!str(r.version) || !semverRe.test(r.version)) return bad(`github-release version "${r.version}" is not a version`);
+  if (r.tag !== undefined && !(str(r.tag) && tagTmplRe.test(r.tag))) bad("github-release tag must hold {version}");
+  const sums = r.sha256 || {};
+  if (Object.keys(sums).length === 0) return bad("a pinned github-release needs its sha256 per architecture");
+  for (const [arch, sum] of Object.entries(sums)) {
+    if (arch !== "amd64" && arch !== "arm64") bad(`unknown architecture "${arch}"`);
+    if (!str(sum) || !sha256Re.test(sum)) bad(`sha256 for ${arch} is not 64 lower-case hex digits`);
+  }
+  for (const [arch, t] of Object.entries(r.targets || {})) if (!(arch in sums) || !str(t) || !targetRe.test(t)) bad(`target for ${arch} needs a pin and a plain name`);
+  if (hasTarget && Object.keys(r.targets || {}).length !== Object.keys(sums).length) bad("{target} needs a target for every pinned architecture");
+  if (r.path !== undefined) {
+    const segs = String(r.path).split("/");
+    if (!archPathRe.test(r.path) || segs.includes("..") || segs.includes(".")) bad("github-release path must be a plain relative path");
+    if (format === "binary") bad("a bare binary has no path inside");
+  }
+  if (r.folder !== undefined && typeof r.folder !== "boolean") bad("folder is true or false");
+  if (r.folder && format === "binary") bad("a folder install needs an archive");
+}
+
+function validateWinget(p, bad) {
+  for (const k of Object.keys(p)) if (!["driver", "id", "scope"].includes(k)) return bad("winget takes only an id and a scope");
+  if (p.driver !== "winget") return bad("the windows platform uses the winget driver");
+  if (!str(p.id) || !wingetIdRe.test(p.id)) bad("winget needs a package identifier");
+  if (p.scope !== "user" && p.scope !== "machine") bad("winget needs a scope, user or machine");
+}
+
+function validateV2(e, bad) {
+  if (e.tier !== undefined && e.tier !== "official" && e.tier !== "community") bad(`unknown tier "${e.tier}"`);
+  if (e.recommended !== undefined && typeof e.recommended !== "boolean") bad("recommended is true or false");
+  if (e.approxSizeMB !== undefined && !(Number.isInteger(e.approxSizeMB) && e.approxSizeMB >= 0 && e.approxSizeMB <= 100000)) bad("approxSizeMB out of range");
+  if (e.updatedAt !== undefined) {
+    const t = Date.parse(`${e.updatedAt}T00:00:00Z`);
+    if (!str(e.updatedAt) || !dateRe.test(e.updatedAt) || Number.isNaN(t) || new Date(t).toISOString().slice(0, 10) !== e.updatedAt) bad("updatedAt must be a date, YYYY-MM-DD");
+  }
+  const a = e.agent;
+  if (a === undefined) return;
+  if (typeof a !== "object" || a === null || Array.isArray(a)) return bad("agent must be an object");
+  for (const k of Object.keys(a)) if (!agentKeys.has(k)) bad(`unknown agent field "${k}"`);
+  if (!plain(a.summary ?? "", 300) || !plain(a.caveats ?? "", 500) || (a.commands ?? []).length > 8 || (a.formats ?? []).length > 24) bad("agent notes are plain and short");
+  for (const c of a.commands ?? []) if (!str(c) || !c.trim() || !plain(c, 200)) bad("agent commands are plain lines");
+  for (const f of a.formats ?? []) if (!str(f) || !formatRe.test(f)) bad(`agent format "${f}" is not a file extension`);
+  if ((a.skill !== undefined && !(str(a.skill) && idRe.test(a.skill))) || (a.extension !== undefined && !(str(a.extension) && extIdRe.test(a.extension)))) bad("agent skill and extension are ids");
+}
+
+export function validateBundle(b, ids) {
+  const errs = [];
+  if (typeof b !== "object" || b === null || Array.isArray(b)) return ["bundle must be an object"];
+  for (const k of Object.keys(b)) if (!bundleKeys.has(k)) errs.push(`unknown field "${k}"`);
+  if (!str(b.id) || !idRe.test(b.id)) errs.push("invalid id");
+  if (!str(b.name) || !b.name.trim() || !str(b.summary) || !b.summary.trim() || !plain(b.name, 60) || !plain(b.summary, 300)) errs.push("name and summary are required, plain and short");
+  if (!categories.includes(b.area)) errs.push(`unknown area "${b.area}"`);
+  if (!Array.isArray(b.items) || b.items.length < 2 || b.items.length > 12) return [...errs, "a bundle holds 2 to 12 items"];
+  const seen = new Set();
+  for (const id of b.items) {
+    if (!str(id) || !idRe.test(id) || seen.has(id)) errs.push(`invalid or repeated item "${id}"`);
+    else if (ids && !ids.has(id)) errs.push(`names unknown "${id}"`);
+    seen.add(id);
+  }
+  return errs;
+}
+
 export function validateEntry(e) {
   const errs = [];
   const bad = (m) => errs.push(m);
@@ -81,7 +183,26 @@ export function validateEntry(e) {
   if (!categories.includes(e.category)) bad(`unknown category "${e.category}"`);
   if (!isHttps(e.homepage) || !isHttps(e.publisher?.url)) bad("homepage and publisher.url must be https URLs");
   if (!strs(e.keywords) || !strs(e.dependsOn)) bad("keywords and dependsOn must be lists of strings");
+  if (!signIns.has(e.signIn ?? "")) bad(`unknown signIn "${e.signIn}"`);
+  if (!updatesSet.has(e.updates ?? "")) bad(`unknown updates "${e.updates}"`);
+  validateV2(e, bad);
+  if (typeof e.platforms !== "object" || e.platforms === null) {
+    bad("no platforms");
+    return errs;
+  }
+  for (const k of Object.keys(e.platforms)) if (k !== "wsl" && k !== "windows") bad(`platform "${k}" is not read by any version`);
+  const w = e.platforms.windows;
+  if (w) {
+    if (e.category === "agent-clis") bad("agent CLIs have no Windows platform");
+    validateWinget(w, bad);
+  }
+  const p = e.platforms.wsl;
   const d = e.detect || {};
+  if (!p) {
+    if (!w) bad("no platform");
+    else if (e.required || e.category === "agent-clis" || e.detect !== undefined) bad("a Windows-only entry is a tool and has no Linux detection");
+    return errs;
+  }
   if (!str(d.command) || !commandRe.test(d.command) || !Array.isArray(d.version) || d.version[0] !== d.command || !d.version.every(str)) {
     bad("detect must name a command and run it for the version");
   }
@@ -92,17 +213,9 @@ export function validateEntry(e) {
       bad("detect.pattern is not a regular expression");
     }
   }
-  if (!signIns.has(e.signIn ?? "")) bad(`unknown signIn "${e.signIn}"`);
-  if (!updatesSet.has(e.updates ?? "")) bad(`unknown updates "${e.updates}"`);
-  const p = e.platforms?.wsl;
-  if (!p) {
-    bad("no platforms.wsl");
-    return errs;
-  }
-  for (const k of Object.keys(e.platforms)) if (k !== "wsl") bad(`platform "${k}" is not read by any version yet`);
   for (const k of Object.keys(p)) if (!platformKeys.has(k)) bad(`unknown platform field "${k}"`);
-  if (!(p.driver in drivers)) {
-    bad(`unknown driver "${p.driver}"`);
+  if (!(p.driver in drivers) || p.driver === "winget") {
+    bad(`unknown driver "${p.driver}" for a Linux platform`);
     return errs;
   }
   if (Boolean(e.required) !== (p.driver === "setup")) bad("a required entry, and only one, is installed by Setup");
@@ -114,7 +227,34 @@ export function validateEntry(e) {
     if (!envKeyRe.test(k) || envDenied(k) || !str(v) || !envValRe.test(v)) bad(`env ${k} is not allowed`);
   }
   for (const pkg of [...(p.packages || []), ...(p.conflicts || [])]) if (!debRe.test(pkg)) bad(`invalid package name "${pkg}"`);
+  if (p.remove !== undefined) {
+    for (const pkg of p.remove?.packages || []) if (!(p.packages || []).includes(pkg)) bad(`remove lists "${pkg}", which install does not put`);
+    for (const k of Object.keys(p.remove ?? {})) if (k !== "packages" && k !== "keeps") bad(`unknown remove field "${k}"`);
+  }
+  if (p.dist !== undefined && p.driver !== "node-dist") bad("only node-dist takes a dist");
+  if (p.release !== undefined && p.driver !== "github-release") bad("only github-release takes a release");
+  if (p.tool !== undefined && p.driver !== "uv-tool") bad("only uv-tool takes a tool");
+  if (p.noRecommends !== undefined && (typeof p.noRecommends !== "boolean" || (p.driver !== "apt" && p.driver !== "apt-repo"))) bad("only apt and apt-repo take noRecommends");
   switch (p.driver) {
+    case "node-dist": {
+      const dd = p.dist;
+      if (!dd || !distVersionRe.test(dd.version)) bad("node-dist needs a pinned version");
+      if (d.command !== "node") bad("node-dist installs node");
+      for (const [k, v] of Object.entries(dd?.sha256 || {})) if (!distPlatforms.includes(k) || !sha256Re.test(v)) bad(`node-dist sha256 ${k} is not a platform and a SHA-256`);
+      if (!dd?.sha256?.["linux-x64"]) bad("node-dist needs the linux-x64 SHA-256");
+      if (!(p.hosts || []).includes("nodejs.org")) bad("node-dist must list nodejs.org in hosts");
+      break;
+    }
+    case "uv-tool": {
+      const t = p.tool;
+      if (!t || !str(t.package) || !pypiRe.test(t.package) || !str(t.version) || !pyVersionRe.test(t.version)) bad("uv-tool needs a PyPI package and its pinned version");
+      if ((t?.extras || []).length > 8 || !(t?.extras || []).every((x) => str(x) && extraRe.test(x))) bad("uv-tool takes at most 8 plain extras");
+      if (t?.python !== undefined && !pythonRe.test(t.python)) bad("uv-tool python must be a version such as 3.12");
+      if (!str(t?.resolvedAt) || !t.resolvedAt.endsWith("Z") || Number.isNaN(Date.parse(t.resolvedAt)) || new Date(t.resolvedAt).getUTCFullYear() < 2020) bad("uv-tool needs resolvedAt, the UTC time its dependencies were resolved");
+      if (!(e.dependsOn || []).includes("uv")) bad("uv-tool entries depend on uv");
+      if (p.package || p.packages?.length || p.script || p.repo || p.hosts?.length || (p.env && Object.keys(p.env).length)) bad("uv-tool takes only its tool");
+      break;
+    }
     case "cli":
     case "setup":
       if (p.package || p.packages?.length || p.repo || p.release || p.script) bad(`driver ${p.driver} takes no parameters`);
@@ -124,10 +264,12 @@ export function validateEntry(e) {
       break;
     case "github-release": {
       const r = p.release;
-      if (!r || !repoRe.test(r.repo) || !assetRe.test(r.asset) || !assetRe.test(r.checksums) || !commandRe.test(r.binary) || r.binary !== d.command) {
-        bad("github-release needs a repo, an asset, a checksums file and the detected binary");
+      if (!r || !repoRe.test(r.repo) || !assetRe.test(r.asset) || !commandRe.test(r.binary) || r.binary !== d.command) {
+        bad("github-release needs a repo, an asset and the detected binary");
+        break;
       }
-      for (const h of ["api.github.com", "github.com"]) if (!(p.hosts || []).includes(h)) bad(`github-release must list ${h} in hosts`);
+      validateRelease(r, bad);
+      for (const h of r.version ? ["github.com"] : ["api.github.com", "github.com"]) if (!(p.hosts || []).includes(h)) bad(`github-release must list ${h} in hosts`);
       break;
     }
     case "vendor-script":
@@ -150,7 +292,7 @@ export function validateEntry(e) {
 export function validateCatalog(doc) {
   const out = [];
   if (typeof doc !== "object" || doc === null || Array.isArray(doc)) return ["catalog.json must be an object"];
-  for (const k of Object.keys(doc)) if (!["version", "entries"].includes(k)) out.push(`catalog.json: unknown field "${k}" (the serial is stamped when it is signed)`);
+  for (const k of Object.keys(doc)) if (!["version", "entries", "bundles"].includes(k)) out.push(`catalog.json: unknown field "${k}" (the serial is stamped when it is signed)`);
   if (doc.version !== 1) out.push("catalog.json: version must be 1");
   if (!Array.isArray(doc.entries) || doc.entries.length === 0) return [...out, "catalog.json: entries must be a non-empty list"];
   if (doc.entries.length > 500) out.push(`catalog.json holds ${doc.entries.length} entries; the cap is 500`);
@@ -160,6 +302,17 @@ export function validateCatalog(doc) {
     for (const m of validateEntry(e)) out.push(`${at}: ${m}`);
     if (ids.has(e?.id)) out.push(`${at}: id is listed twice`);
     ids.add(e?.id);
+  }
+  if (doc.bundles !== undefined) {
+    if (!Array.isArray(doc.bundles)) out.push("bundles must be a list");
+    else {
+      const bids = new Set();
+      for (const [i, b] of doc.bundles.entries()) {
+        for (const m of validateBundle(b, ids)) out.push(`bundles[${i}] (${b?.id ?? "?"}): ${m}`);
+        if (bids.has(b?.id)) out.push(`bundles[${i}]: id is listed twice`);
+        bids.add(b?.id);
+      }
+    }
   }
   for (const e of doc.entries) for (const dep of e?.dependsOn || []) if (!ids.has(dep)) out.push(`${e.id}: depends on unknown "${dep}"`);
   return out;
@@ -175,6 +328,27 @@ async function get(url, { json = false, limit = 4 << 20, headers = {} } = {}) {
   return json ? JSON.parse(buf.toString("utf8")) : buf;
 }
 const ghHeaders = () => (token ? { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" } : { Accept: "application/vnd.github+json" });
+
+// A pinned release (schema v2): the asset of that tag's release, per pinned
+// architecture, must hash to the catalog's sha256 (downloaded whole, 256 MiB
+// cap), and when the entry names a checksums file the vendor's must list the
+// same hash.
+async function checkPinnedRelease(e, r) {
+  const tag = (r.tag || "v{version}").replaceAll("{version}", r.version);
+  for (const [arch, want] of Object.entries(r.sha256)) {
+    const fill = (t) => t.replaceAll("{version}", r.version).replaceAll("{arch}", arch).replaceAll("{target}", r.targets?.[arch] ?? "");
+    const asset = fill(r.asset);
+    const body = await get(`https://github.com/${r.repo}/releases/download/${tag}/${asset}`, { limit: 256 << 20 });
+    const got = createHash("sha256").update(body).digest("hex");
+    if (got !== want) fail(`${e.id}: ${asset} (${tag}) hashes to ${got}, the entry pins ${want}`);
+    else notes.push(`${e.id}: ${arch} ${asset} ${tag} sha256 matches (${body.length} bytes)`);
+    if (r.checksums) {
+      const sums = (await get(`https://github.com/${r.repo}/releases/download/${tag}/${fill(r.checksums)}`)).toString("utf8");
+      const line = sums.split("\n").find((l) => l.trim().split(/\s+/)[1]?.replace(/^\*/, "") === asset);
+      if (!line || line.trim().split(/\s+/)[0].toLowerCase() !== want) fail(`${e.id}: ${fill(r.checksums)} does not list ${want} for ${asset}`);
+    }
+  }
+}
 
 async function checkSource(e) {
   const p = e.platforms.wsl;
@@ -196,6 +370,7 @@ async function checkSource(e) {
       const r = p.release;
       const meta = await get(`https://api.github.com/repos/${r.repo}`, { json: true, headers: ghHeaders() });
       if (meta.private || meta.fork || meta.archived) fail(`${e.id}: ${r.repo} is private, a fork or archived`);
+      if (r.version) return checkPinnedRelease(e, r);
       const rel = await get(`https://api.github.com/repos/${r.repo}/releases/latest`, { json: true, headers: ghHeaders() });
       const version = String(rel.tag_name).replace(/^v/, "");
       const names = new Set(rel.assets.map((a) => a.name));
@@ -208,6 +383,17 @@ async function checkSource(e) {
       const amd = r.asset.replaceAll("{version}", version).replaceAll("{arch}", "amd64");
       if (!sums.split("\n").some((l) => l.trim().split(/\s+/)[1]?.replace(/^\*/, "") === amd)) fail(`${e.id}: ${r.checksums} does not list ${amd}`);
       notes.push(`${e.id}: ${r.repo} ${rel.tag_name}, checksums list the asset`);
+      return;
+    }
+    case "node-dist": {
+      const v = p.dist.version;
+      const sums = (await get(`https://nodejs.org/dist/v${v}/SHASUMS256.txt`)).toString("utf8");
+      for (const [plat, sum] of Object.entries(p.dist.sha256)) {
+        const file = `node-v${v}-${plat}.tar.gz`;
+        const line = sums.split("\n").find((l) => l.trim().endsWith(` ${file}`));
+        if (!line || line.trim().split(/\s+/)[0] !== sum) fail(`${e.id}: nodejs.org's SHASUMS256.txt for v${v} does not list ${sum} for ${file}`);
+      }
+      notes.push(`${e.id}: node v${v}, SHA-256 per platform match nodejs.org's list`);
       return;
     }
     case "apt-repo": {

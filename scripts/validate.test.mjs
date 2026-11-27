@@ -2,7 +2,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { validateCatalog, validateEntry } from "./validate.mjs";
+import { validateCatalog, validateEntry, validateBundle } from "./validate.mjs";
 
 const catalog = JSON.parse(readFileSync(new URL("../catalog.json", import.meta.url), "utf8"));
 const npm = () => ({
@@ -50,4 +50,62 @@ test("refuses a catalog with a duplicate, an unknown dependency or a serial", ()
   assert.notDeepEqual(validateCatalog({ version: 1, entries: [set((e) => { e.dependsOn = ["nope"]; })] }), []);
   assert.notDeepEqual(validateCatalog({ version: 1, serial: 9, entries: [npm()] }), []);
   assert.notDeepEqual(validateCatalog({ version: 2, entries: [npm()] }), []);
+});
+
+// Schema v2 (ADR-0409 amendment): what internal/software/catalog.go refuses.
+const sum = "a".repeat(64);
+const pinned = (f) => set((e, p) => {
+  delete p.package;
+  Object.assign(p, { driver: "github-release", hosts: ["github.com"], release: { repo: "o/x", asset: "x-{target}.tar.xz", binary: "x", version: "1.2.3", path: "x-{target}/x", targets: { amd64: "x86_64-linux" }, sha256: { amd64: sum } } });
+  f?.(e, p, p.release);
+});
+
+test("a pinned github-release and the v2 words pass", () => {
+  assert.deepEqual(validateEntry(pinned((e) => {
+    Object.assign(e, { category: "documents", tier: "official", recommended: true, approxSizeMB: 40, updatedAt: "2026-11-26", agent: { summary: "s", commands: ["x a b"], formats: [".pdf"], caveats: "c" } });
+    e.platforms.windows = { driver: "winget", id: "Pub.Tool", scope: "user" };
+  })), []);
+});
+
+const refusedV2 = {
+  "pin without a hash": pinned((e, p, r) => { delete r.sha256; }),
+  "short hash": pinned((e, p, r) => { r.sha256.amd64 = "abc"; }),
+  "upper-case hash": pinned((e, p, r) => { r.sha256.amd64 = "A".repeat(64); }),
+  "version that is not one": pinned((e, p, r) => { r.version = "latest"; }),
+  "tag without {version}": pinned((e, p, r) => { r.tag = "v1"; }),
+  "{target} without a target": pinned((e, p, r) => { delete r.targets; }),
+  "path that climbs": pinned((e, p, r) => { r.path = "../x"; }),
+  "unknown release field": pinned((e, p, r) => { r.run = "sh"; }),
+  "an installer asset": pinned((e, p, r) => { r.asset = "x.exe"; delete r.targets; r.path = undefined; }),
+  "a v1 release with a path": set((e, p) => { delete p.package; Object.assign(p, { driver: "github-release", hosts: ["api.github.com", "github.com"], release: { repo: "o/x", asset: "x.tar.gz", checksums: "s.txt", binary: "x", path: "x" } }); }),
+  "a pin without github.com in hosts": pinned((e, p) => { p.hosts = []; }),
+  "unknown tier": set((e) => { e.tier = "vendor"; }),
+  "a made-up date": set((e) => { e.updatedAt = "2026-02-31"; }),
+  "agent command with a newline": set((e) => { e.agent = { commands: ["a\nb"] }; }),
+  "agent format without a dot": set((e) => { e.agent = { formats: ["pdf"] }; }),
+  "agent field it does not know": set((e) => { e.agent = { run: "x" }; }),
+  "winget with a flag": set((e) => { e.platforms.windows = { driver: "winget", id: "Pub.Tool", scope: "user", args: "--force" }; }),
+  "winget without a scope": set((e) => { e.platforms.windows = { driver: "winget", id: "Pub.Tool" }; }),
+  "windows-only agent CLI": set((e) => { e.category = "agent-clis"; e.platforms = { windows: { driver: "winget", id: "Pub.Tool", scope: "user" } }; }),
+  "remove lists a package install does not put": set((e, p) => { delete p.package; Object.assign(p, { driver: "apt", account: "root", packages: ["x"], remove: { packages: ["y"] } }); }),
+  "noRecommends on npm": set((e, p) => { p.noRecommends = true; }),
+};
+for (const [name, e] of Object.entries(refusedV2)) {
+  test(`refuses (v2): ${name}`, () => assert.notDeepEqual(validateEntry(e), []));
+}
+
+test("a Windows-only entry is a tool without Linux detection", () => {
+  const w = { id: "t", name: "T", category: "dev-tools", summary: "s", license: "MIT", publisher: { name: "P", url: "https://p.example" }, homepage: "https://p.example", platforms: { windows: { driver: "winget", id: "Pub.Tool", scope: "machine" } } };
+  assert.deepEqual(validateEntry(w), []);
+  assert.notDeepEqual(validateEntry({ ...w, detect: { command: "t", version: ["t", "-v"] } }), []);
+});
+
+test("starter sets: known area, 2 to 12 distinct items the catalog holds", () => {
+  const ids = new Set(["a", "b", "c"]);
+  const ok = { id: "kit", name: "Kit", area: "documents", summary: "s", items: ["a", "b"] };
+  assert.deepEqual(validateBundle(ok, ids), []);
+  for (const bad of [{ ...ok, area: "games" }, { ...ok, items: ["a"] }, { ...ok, items: ["a", "a"] }, { ...ok, items: ["a", "zzz"] }, { ...ok, extra: 1 }]) {
+    assert.notDeepEqual(validateBundle(bad, ids), []);
+  }
+  assert.notDeepEqual(validateCatalog({ version: 1, entries: [npm()], bundles: [ok] }), []);
 });
