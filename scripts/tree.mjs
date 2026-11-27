@@ -4,7 +4,7 @@
 // the tree by build.mjs and is not committed; the app reads the signed index
 // made from it. Nothing here touches the network.
 
-import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync, lstatSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, relative } from "node:path";
 import { categories as categoriesOrder } from "./categories.mjs";
@@ -34,13 +34,13 @@ export function readTree(dir = root) {
   if (existsSync(eDir)) {
     for (const area of readdirSync(eDir).sort()) {
       const aDir = join(eDir, area);
-      if (!statSync(aDir).isDirectory()) {
+      if (!lstatSync(aDir).isDirectory()) {
         problems.push(`entries/${area}: entries live in entries/<area>/<id>.json`);
         continue;
       }
       for (const f of readdirSync(aDir).sort()) {
         const abs = join(aDir, f);
-        if (!f.endsWith(".json") || !statSync(abs).isFile()) {
+        if (!f.endsWith(".json") || !lstatSync(abs).isFile()) {
           problems.push(`entries/${area}/${f}: only <id>.json files belong here`);
           continue;
         }
@@ -52,7 +52,7 @@ export function readTree(dir = root) {
   if (existsSync(bDir)) {
     for (const f of readdirSync(bDir).sort()) {
       const abs = join(bDir, f);
-      if (!f.endsWith(".json") || !statSync(abs).isFile()) {
+      if (!f.endsWith(".json") || !lstatSync(abs).isFile()) {
         problems.push(`bundles/${f}: only <id>.json files belong here`);
         continue;
       }

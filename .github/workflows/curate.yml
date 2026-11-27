@@ -6,7 +6,11 @@ name: curate
 # clean ubuntu:24.04 and debian:12 containers), and opens ONE pull request with
 # the pins it moved and an audit table. It never merges and never signs: a
 # maintainer reviews the pull request, and only the merge reaches publish.yml
-# and its signing environment.
+# and its signing environment. That holds when main requires a pull request and
+# this repository's checks (branch protection): a fine-grained token cannot be
+# limited to curator/* branches, so protection is what stops it pushing to
+# main. A week where candidates are held back, or pins are only reported, opens
+# or updates the issue labeled curator-notes instead of a pull request.
 #
 # The token is CURATOR_TOKEN: a fine-grained token or GitHub App token scoped to
 # this repository with Contents and Pull requests write, nothing else. The
@@ -29,6 +33,7 @@ on:
 
 permissions:
   contents: read
+  issues: write
 
 concurrency:
   group: curate
@@ -94,4 +99,16 @@ jobs:
             echo "updated pull request #$number"
           else
             gh pr create --head "$branch" --base main --title "$title" --body-file "$RUNNER_TEMP/audit.md"
+          fi
+      - name: Held-back candidates and reported pins go to one issue
+        if: steps.refresh.outputs.notes == 'true' && env.DRY_RUN != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create curator-notes --color 0E8A16 --description "Weekly refresh: held-back candidates and reported pins" --force >/dev/null
+          number=$(gh issue list --label curator-notes --state open --json number --jq '.[0].number // empty')
+          if [ -n "$number" ]; then
+            gh issue edit "$number" --body-file "$RUNNER_TEMP/audit.md"
+          else
+            gh issue create --label curator-notes --title "Catalog refresh: held back or to re-prove" --body-file "$RUNNER_TEMP/audit.md"
           fi

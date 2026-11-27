@@ -20,7 +20,7 @@
 // Reads GITHUB_TOKEN / GH_TOKEN for the API rate limit. Exit 0 whether or not
 // anything changed; non-zero only when the refresh itself could not run.
 
-import { writeFileSync, appendFileSync, mkdtempSync, rmSync, chmodSync, existsSync, readdirSync } from "node:fs";
+import { writeFileSync, appendFileSync, mkdtempSync, rmSync, chmodSync, lstatSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
@@ -145,7 +145,10 @@ function smoke(e, r, v, bytes) {
       else execFileSync("tar", ["-xf", file, "-C", work]);
       const rel = r.path ? fill(r.path, r, v, "amd64") : r.binary;
       bin = join(work, rel);
-      if (!existsSync(bin)) return { ok: false, detail: `${rel} is not in the archive (${readdirSync(work).join(", ")})` };
+      // lstat: a symlink in the archive must not point the mount at a host file.
+      let st;
+      try { st = lstatSync(bin); } catch { st = null; }
+      if (!st || !st.isFile()) return { ok: false, detail: `${rel} is not a regular file in the archive (${readdirSync(work).join(", ")})` };
     }
     chmodSync(bin, 0o755);
     const [, ...rest] = e.detect.version;
@@ -154,7 +157,7 @@ function smoke(e, r, v, bytes) {
     for (const image of images) {
       let out;
       try {
-        out = execFileSync("docker", ["run", "--rm", "-v", `${bin}:/opt/tool:ro`, image, "/opt/tool", ...rest], { encoding: "utf8", timeout: 120000, stdio: ["ignore", "pipe", "pipe"] });
+        out = execFileSync("docker", ["run", "--rm", "--network", "none", "-v", `${bin}:/opt/tool:ro`, image, "/opt/tool", ...rest], { encoding: "utf8", timeout: 120000, stdio: ["ignore", "pipe", "pipe"] });
       } catch (err) {
         return { ok: false, detail: `${image}: ${String(err.stderr || err.message).trim().slice(0, 200)}` };
       }
@@ -175,6 +178,9 @@ export function apply(file, doc, result, today) {
   writeFileSync(file, serialize(doc));
 }
 
+// Upstream text goes into a table cell: no pipes, no markup, no line breaks.
+const cell = (t) => String(t).replace(/[|`<>\r\n]+/g, " ").trim();
+
 export function report(results, info, today) {
   const rows = results.filter((x) => x.status !== "current");
   const lines = [`## Catalog refresh, ${today}`, ""];
@@ -183,8 +189,8 @@ export function report(results, info, today) {
     lines.push("| Entry | Pinned | Upstream | Result | Evidence |", "|---|---|---|---|---|");
     for (const x of rows) {
       const result = x.status === "bump" ? "bumped" : "**held back**";
-      const evidence = [...(x.notes ?? []), x.license && x.status === "bump" ? `license ${x.license}` : "", x.smoke ? `smoke: ${x.smoke.detail}` : ""].filter(Boolean).join("; ");
-      lines.push(`| \`${x.id}\` | ${x.from} | ${x.to ?? "?"} | ${result} | ${evidence} |`);
+      const evidence = cell([...(x.notes ?? []), x.license && x.status === "bump" ? `license ${x.license}` : "", x.smoke ? `smoke: ${x.smoke.detail}` : ""].filter(Boolean).join("; "));
+      lines.push(`| \`${x.id}\` | ${cell(x.from)} | ${cell(x.to ?? "?")} | ${result} | ${evidence} |`);
     }
     lines.push("");
   }
@@ -239,6 +245,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const bumps = results.filter((x) => x.status === "bump");
   const changed = bumps.length > 0 && !dry;
   if (arg("--summary")) writeFileSync(arg("--summary"), JSON.stringify({ changed, bumps: bumps.map((x) => `${x.id} ${x.from} → ${x.to}`), held: results.filter((x) => x.status === "held").map((x) => x.id) }, null, 2) + "\n");
-  if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, `changed=${changed}\nbumps=${bumps.length}\nheld=${results.filter((x) => x.status === "held").length}\n`);
+  const heldN = results.filter((x) => x.status === "held").length;
+  // Something a person should read even when no pin moved: a held-back candidate or a reported pin.
+  const notes = heldN > 0 || md.includes("Reported, not changed");
+  if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT, `changed=${changed}\nbumps=${bumps.length}\nheld=${heldN}\nnotes=${notes}\n`);
   console.log(`refresh: ${pinned.length} pinned, ${bumps.length} bumped, ${results.filter((x) => x.status === "held").length} held back`);
 }

@@ -117,3 +117,10 @@ test("the report: quiet when current, a table when not", () => {
   assert.match(md, /\*\*held back\*\*/);
   assert.match(md, /Reported, not changed/);
 });
+
+test("upstream text cannot break or spoof the audit table", () => {
+  const md = report([{ id: "x", status: "bump", from: "1.0.0", to: "1.1.0", notes: [], smoke: { ok: true, detail: "a | [click](https://evil.example) `x`\n| fake | row |" } }], [], "d");
+  const row = md.split("\n").find((l) => l.startsWith("| `x`"));
+  assert.equal(row.split("|").length, 7);
+  assert.ok(!/[`<>]/.test(row.slice(row.indexOf("1.1.0"))));
+});

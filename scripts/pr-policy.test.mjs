@@ -39,3 +39,19 @@ test("a deletion is not checked online; a stray path under entries/ is refused",
   assert.deepEqual(r.entries, []);
   assert.match(r.problems[0], /entries\/<area>\/<id>\.json/);
 });
+
+test("an outside author's entry must say community; no tier or official is refused", () => {
+  for (const tier of ["official", ""]) assert.match(policy([c("A", "entries/data/x.json")], () => tier, true).problems.join(), /tier "community"/);
+  assert.deepEqual(policy([c("A", "entries/data/x.json")], () => "community", true).problems, []);
+});
+
+test("an outside PR cannot delete an entry or edit an existing starter set", () => {
+  const t = () => "community";
+  assert.match(policy([c("A", "entries/data/x.json"), c("D", "entries/agent-clis/pi.json")], t, true).problems.join(), /alone/);
+  assert.match(policy([c("A", "entries/data/x.json"), c("M", "bundles/office-pdf-kit.json")], t, true).problems.join(), /starter set/);
+  assert.deepEqual(policy([c("A", "entries/data/x.json"), c("A", "bundles/k.json")], t, true).problems, []);
+});
+
+test("a trusted author with an official entry is unrestricted", () => {
+  assert.deepEqual(policy([c("M", "entries/data/a.json"), c("M", "entries/data/b.json")], () => "", false).problems, []);
+});

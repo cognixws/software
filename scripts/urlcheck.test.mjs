@@ -48,3 +48,20 @@ test("the report names addresses and never anything else", () => {
   assert.match(md, /1 broken/);
   assert.match(md, /https:\/\/github\.com\/o\/x\/a: HTTP 404/);
 });
+
+test("an unpinned release's asset must exist under the latest tag", async () => {
+  const { run } = await import("./urlcheck.mjs");
+  const e = { id: "s", homepage: "https://s.example", publisher: { url: "https://s.example" }, platforms: { wsl: { driver: "github-release", hosts: ["github.com"], release: { repo: "o/s", asset: "s_{version}_{arch}.tar.gz", checksums: "sums.txt", binary: "s" } } } };
+  const mk = (assets) => async (url, init) => url.endsWith("/releases/latest") ? { status: 200, ok: true, headers: { get: () => null }, json: async () => ({ tag_name: "v1.2.0", assets: assets.map((name) => ({ name })) }) } : reply(200);
+  const good = await run([{ kind: "entry", doc: e }], { fetcher: mk(["s_1.2.0_amd64.tar.gz", "s_1.2.0_arm64.tar.gz", "sums.txt"]) });
+  assert.ok(good.every((r) => r.state === "ok"));
+  const bad = await run([{ kind: "entry", doc: e }], { fetcher: mk(["s-1.2.0-amd64.tar.gz", "sums.txt"]) });
+  assert.match(bad.find((r) => r.state === "fail").why, /has no s_1\.2\.0_amd64\.tar\.gz/);
+});
+
+test("the credential is not sent to another host on a redirect", async () => {
+  const seen = [];
+  const f = async (url, init) => { seen.push([new URL(url).host, init.headers.Authorization]); return url.includes("api.") ? reply(302, "https://cdn.example/x") : reply(200); };
+  await probe("https://api.example/x", { headers: { Authorization: "Bearer t" }, fetcher: f });
+  assert.deepEqual(seen, [["api.example", "Bearer t"], ["cdn.example", undefined]]);
+});

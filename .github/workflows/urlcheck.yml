@@ -39,7 +39,7 @@ jobs:
           cat "$RUNNER_TEMP/report.md" >> "$GITHUB_STEP_SUMMARY" 2>/dev/null
           echo "code=$code" >> "$GITHUB_OUTPUT"
           # 1 is "something is broken", reported below; anything else is the script failing.
-          if [ "$code" -gt 1 ]; then exit "$code"; fi
+          if [ "$code" -gt 1 ]; then echo "the check could not run (exit $code)" >&2; exit "$code"; fi
       - name: Keep the issue current
         env:
           GH_TOKEN: ${{ github.token }}

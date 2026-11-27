@@ -43,16 +43,21 @@ the signature is Ed25519 over the payload's exact bytes.
 
 ## Upkeep (OD4)
 
-Pinned versions and hashes are kept current by two scheduled workflows, and
-neither can sign or merge:
+Pinned versions and hashes are kept current by two scheduled workflows. Neither
+has the signing key and neither merges; that the curator cannot reach `main` is
+enforced by branch protection (require a pull request and the `validate`
+checks on `main`), which the repository must have before `CURATOR_TOKEN` is
+added, because a fine-grained token cannot be limited to `curator/*` branches:
 
 | Workflow | When | What it does |
 |---|---|---|
-| `curate` | Mondays 06:00 UTC | For each pinned `github-release` entry: a newer release that is at least 24 h old, whose assets exist and hash as GitHub says (and as the checksums file says, when named), whose license is the one recorded, and whose binary runs its version command in clean `ubuntu:24.04` and `debian:12` containers, moves the pin (`version`, `sha256`, `updatedAt`). One pull request, `curator/weekly`, with an audit table; a candidate that fails any check is held back and the old pin stays. `node-dist` and `uv-tool` pins are reported in the table, not changed. A maintainer merges it. |
+| `curate` | Mondays 06:00 UTC | For each pinned `github-release` entry: a newer release that is at least 24 h old, whose assets exist and hash as GitHub says (and as the checksums file says, when named), whose license is the one recorded, and whose binary runs its version command in clean `ubuntu:24.04` and `debian:12` containers, moves the pin (`version`, `sha256`, `updatedAt`). One pull request, `curator/weekly`, with an audit table; a candidate that fails any check is held back and the old pin stays. `node-dist` and `uv-tool` pins are reported in the table, not changed. A maintainer merges it. In a week where candidates are only held back, or pins are only reported, there is no pull request: the issue labeled `curator-notes` carries the table. |
 | `urlcheck` | Daily 05:17 UTC | Every address an entry stands on (homepage, each pinned asset per architecture, script, apt repository and key, packages, winget manifest). A broken one opens or updates the issue labeled `broken-source`; a clean day closes it. A bot wall or timeout is listed as unverified, not broken. |
 
-`curate` pushes with `CURATOR_TOKEN`, a fine-grained token or GitHub App token
-for this repository with Contents and Pull requests write and nothing else.
+`curate` pushes with `CURATOR_TOKEN`, preferably a GitHub App installation
+token (a personal token makes its owner the author, who then cannot approve
+the pull request), for this repository with Contents and Pull requests write
+and nothing else.
 Without it the run stops before it changes anything. Its own `GITHUB_TOKEN`
 is read-only and the signing key lives only in `publish`'s environment.
 Run either by hand from the Actions tab (`curate` takes a dry-run switch), or

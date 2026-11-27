@@ -6,14 +6,17 @@
 // downloads nothing large (HEAD, then a one-byte GET when a server refuses
 // HEAD) and prints addresses only; the workflow turns a failure into an
 // issue, so a rename like duckdb_cli → duckdb-cli is seen within a day,
-// before anyone presses Install.
+// before anyone presses Install (for a pinned entry the old tag's asset does not
+// move, so this guards against a deleted release or a removed asset; the
+// weekly refresh is what holds back a bump whose asset was renamed). An entry
+// that installs "latest" also has its asset resolved under the latest tag.
 //
 // A 403, 429 or timeout from a vendor's own site is "unverified", reported
 // but not a failure: bot walls are not broken links. A 404, a 410, a failed
 // DNS lookup, a 5xx or an off-host redirect of a download is a failure.
 //
 // Run: node scripts/urlcheck.mjs [--report FILE]
-// Exit 0: all reachable. Exit 1: at least one failure. Reads GITHUB_TOKEN /
+// Exit 0: all reachable. Exit 1: at least one failure. Exit 2: the check itself failed. Reads GITHUB_TOKEN /
 // GH_TOKEN for the API only and never prints it.
 
 import { writeFileSync } from "node:fs";
@@ -32,8 +35,11 @@ export async function probe(url, { hosts, method = "HEAD", headers = {}, fetcher
     if (u.protocol !== "https:") return { state: "fail", why: `${cur} is not HTTPS` };
     if (hosts && !hosts.includes(u.host)) return { state: "fail", why: `redirects to ${u.host}, which the entry does not name` };
     let res;
+    // A credential goes to the host it was meant for, never along a redirect.
+    const h = { ...headers };
+    if (u.host !== new URL(url).host) delete h.Authorization;
     try {
-      res = await fetcher(cur, { method, redirect: "manual", headers: { "User-Agent": UA, ...(method === "GET" ? { Range: "bytes=0-0" } : {}), ...headers }, signal: AbortSignal.timeout(20000) });
+      res = await fetcher(cur, { method, redirect: "manual", headers: { "User-Agent": UA, ...(method === "GET" ? { Range: "bytes=0-0" } : {}), ...h }, signal: AbortSignal.timeout(20000) });
     } catch (err) {
       const why = String(err.cause?.code || err.name || err.message);
       return /Timeout|ETIMEDOUT|ECONNRESET/i.test(why) ? { state: "unverified", why: `${why}` } : { state: "fail", why };
@@ -74,7 +80,7 @@ export function targets(e) {
           add(`asset ${arch}`, `https://github.com/${r.repo}/releases/download/${tag}/${fill(r.asset, r, r.version, arch)}`, { hosts: p.hosts });
           if (r.checksums) add(`checksums ${arch}`, `https://github.com/${r.repo}/releases/download/${tag}/${fill(r.checksums, r, r.version, arch)}`, { hosts: p.hosts });
         }
-      } else add("latest release", `https://api.github.com/repos/${r.repo}/releases/latest`, { api: true });
+      } else add("latest release", `https://api.github.com/repos/${r.repo}/releases/latest`, { api: true, latestOf: r });
       break;
     }
     case "npm-global": add(`npm ${p.package}`, `https://registry.npmjs.org/${p.package.replace("/", "%2f")}`); break;
@@ -94,6 +100,21 @@ export function targets(e) {
   return out;
 }
 
+async function latestAssets(r, fetcher) {
+  let rel;
+  try {
+    const res = await fetcher(`https://api.github.com/repos/${r.repo}/releases/latest`, { headers: { "User-Agent": UA, ...ghHeaders() }, signal: AbortSignal.timeout(20000) });
+    rel = await res.json();
+  } catch (err) {
+    return { state: "unverified", why: String(err.message) };
+  }
+  const version = String(rel.tag_name ?? "").replace(/^v/, "");
+  const names = new Set((rel.assets ?? []).map((a) => a.name));
+  const want = ["amd64", "arm64"].map((arch) => fill(r.asset, r, version, arch)).concat(r.checksums ? [r.checksums] : []);
+  const missing = want.filter((n) => !names.has(n));
+  return missing.length ? { state: "fail", why: `release ${rel.tag_name} has no ${missing.join(", ")}` } : { state: "ok" };
+}
+
 export async function run(files, { fetcher = fetch, concurrency = 6 } = {}) {
   const list = files.filter((f) => f.kind === "entry").flatMap((f) => targets(f.doc));
   const results = new Array(list.length);
@@ -102,7 +123,9 @@ export async function run(files, { fetcher = fetch, concurrency = 6 } = {}) {
     while (next < list.length) {
       const i = next++;
       const t = list[i];
-      results[i] = { ...t, ...(await probe(t.url, { hosts: t.hosts, headers: t.api ? ghHeaders() : {}, fetcher })) };
+      const got = await probe(t.url, { hosts: t.hosts, headers: t.api ? ghHeaders() : {}, fetcher });
+      // An unpinned entry installs "latest": its asset, under the latest tag, must exist.
+      results[i] = { ...t, ...(got.state === "ok" && t.latestOf ? await latestAssets(t.latestOf, fetcher) : got) };
     }
   }));
   return results;
@@ -120,10 +143,15 @@ export function report(results, today) {
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const argv = process.argv.slice(2);
-  const { files } = readTree();
-  const results = await run(files);
-  const md = report(results, new Date().toISOString().slice(0, 10));
-  if (argv.includes("--report")) writeFileSync(argv[argv.indexOf("--report") + 1], md);
-  console.log(md);
-  process.exit(results.some((r) => r.state === "fail") ? 1 : 0);
+  try {
+    const { files } = readTree();
+    const results = await run(files);
+    const md = report(results, new Date().toISOString().slice(0, 10));
+    if (argv.includes("--report")) writeFileSync(argv[argv.indexOf("--report") + 1], md);
+    console.log(md);
+    process.exit(results.some((r) => r.state === "fail") ? 1 : 0);
+  } catch (err) {
+    console.error(`the check could not run: ${err.message}`);
+    process.exit(2);
+  }
 }

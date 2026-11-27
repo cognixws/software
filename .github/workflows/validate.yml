@@ -7,7 +7,11 @@ name: validate
 # A pull request is checked as the change it is (D5a): pr-policy.mjs says which
 # entry files it changes and refuses a community entry that comes with anything
 # else; the online check, which downloads each pinned asset and compares its
-# SHA-256 with the pin, runs on those entries only. A push to main, a manual
+# SHA-256 with the pin, runs on those entries only (every entry when the pull
+# request changes none). The policy runs from the base commit; an outside
+# author (not owner, member or collaborator) must propose one entry, tier
+# community. Until main requires this workflow's checks (branch protection),
+# a maintainer's review is what enforces it. A push to main, a manual
 # run and the publish workflow check every entry online.
 
 on:
@@ -35,8 +39,11 @@ jobs:
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          ASSOC: ${{ github.event.pull_request.author_association }}
         run: |
-          node scripts/pr-policy.mjs "$BASE_SHA" "$HEAD_SHA" > "$RUNNER_TEMP/changed-entries"
+          # The judge is the base commit's copy, so a pull request cannot edit it.
+          git worktree add --detach "$RUNNER_TEMP/base" "$BASE_SHA"
+          node "$RUNNER_TEMP/base/scripts/pr-policy.mjs" "$BASE_SHA" "$HEAD_SHA" "$ASSOC" > "$RUNNER_TEMP/changed-entries"
           cat "$RUNNER_TEMP/changed-entries"
       - name: The changed entries against their official sources
         if: github.event_name == 'pull_request'
