@@ -1,11 +1,11 @@
 // node --test scripts/: the validator refuses what the app refuses.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readTree, assemble } from "./tree.mjs";
 import { buildPayload } from "./payload.mjs";
 import { validateCatalog, validateEntry, validateBundle } from "./validate.mjs";
 
-const catalog = JSON.parse(readFileSync(new URL("../catalog.json", import.meta.url), "utf8"));
+const catalog = assemble(readTree().files);
 const npm = () => ({
   id: "x", name: "X", category: "dev-tools", summary: "s", license: "MIT",
   publisher: { name: "P", url: "https://p.example" }, homepage: "https://p.example",

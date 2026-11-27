@@ -1,0 +1,27 @@
+{
+  "id": "docker-desktop",
+  "name": "Docker Desktop",
+  "category": "containers",
+  "summary": "Docker's app for Windows: containers, Compose and Kubernetes, with WSL.",
+  "publisher": {
+    "name": "Docker Inc.",
+    "url": "https://www.docker.com"
+  },
+  "homepage": "https://docs.docker.com/desktop/",
+  "license": "Proprietary",
+  "keywords": [
+    "docker",
+    "containers",
+    "compose",
+    "windows"
+  ],
+  "platforms": {
+    "windows": {
+      "driver": "winget",
+      "id": "Docker.DockerDesktop",
+      "scope": "machine"
+    }
+  },
+  "signIn": "later",
+  "updates": "driver"
+}

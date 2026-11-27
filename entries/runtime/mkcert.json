@@ -1,0 +1,31 @@
+{
+  "id": "mkcert",
+  "name": "mkcert",
+  "category": "runtime",
+  "required": true,
+  "summary": "Makes the local certificate the app and the phone trust.",
+  "publisher": {
+    "name": "Filippo Valsorda",
+    "url": "https://github.com/FiloSottile"
+  },
+  "homepage": "https://github.com/FiloSottile/mkcert",
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "mkcert",
+    "certificate",
+    "https",
+    "tls"
+  ],
+  "detect": {
+    "command": "mkcert",
+    "version": [
+      "mkcert",
+      "-version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "driver": "setup"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "id": "powershell",
+  "name": "PowerShell 7",
+  "category": "dev-tools",
+  "summary": "Microsoft's cross-platform shell and scripting language.",
+  "publisher": {
+    "name": "Microsoft",
+    "url": "https://www.microsoft.com"
+  },
+  "homepage": "https://learn.microsoft.com/powershell/",
+  "license": "MIT",
+  "keywords": [
+    "pwsh",
+    "shell",
+    "scripting",
+    "windows"
+  ],
+  "platforms": {
+    "windows": {
+      "driver": "winget",
+      "id": "Microsoft.PowerShell",
+      "scope": "machine"
+    }
+  },
+  "signIn": "none",
+  "updates": "driver"
+}

@@ -1,0 +1,34 @@
+{
+  "id": "pi",
+  "name": "Pi",
+  "category": "agent-clis",
+  "summary": "A minimal terminal coding agent you can extend.",
+  "publisher": {
+    "name": "Earendil Works",
+    "url": "https://github.com/earendil-works"
+  },
+  "homepage": "https://pi.dev",
+  "license": "MIT",
+  "keywords": [
+    "pi",
+    "agent",
+    "coding agent"
+  ],
+  "detect": {
+    "command": "pi",
+    "version": [
+      "pi",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "driver": "cli"
+    }
+  },
+  "dependsOn": [
+    "nodejs"
+  ],
+  "signIn": "gui",
+  "updates": "driver"
+}

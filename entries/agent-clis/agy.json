@@ -1,0 +1,34 @@
+{
+  "id": "agy",
+  "name": "Antigravity",
+  "category": "agent-clis",
+  "summary": "Google's Antigravity coding agent in your terminal.",
+  "publisher": {
+    "name": "Google",
+    "url": "https://antigravity.google"
+  },
+  "homepage": "https://antigravity.google/docs/cli/",
+  "license": "Proprietary",
+  "keywords": [
+    "antigravity",
+    "agy",
+    "google",
+    "gemini",
+    "agent",
+    "coding agent"
+  ],
+  "detect": {
+    "command": "agy",
+    "version": [
+      "agy",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "driver": "cli"
+    }
+  },
+  "signIn": "gui",
+  "updates": "driver"
+}

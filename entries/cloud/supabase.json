@@ -1,0 +1,45 @@
+{
+  "id": "supabase",
+  "name": "Supabase CLI",
+  "category": "cloud",
+  "summary": "Develop and deploy Supabase projects from the terminal.",
+  "publisher": {
+    "name": "Supabase",
+    "url": "https://supabase.com"
+  },
+  "homepage": "https://supabase.com/docs/guides/local-development/cli/getting-started",
+  "license": "MIT",
+  "keywords": [
+    "supabase",
+    "postgres",
+    "database",
+    "deploy"
+  ],
+  "detect": {
+    "command": "supabase",
+    "version": [
+      "supabase",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "driver": "github-release",
+      "account": "user",
+      "hosts": [
+        "api.github.com",
+        "github.com",
+        "objects.githubusercontent.com",
+        "release-assets.githubusercontent.com"
+      ],
+      "release": {
+        "repo": "supabase/cli",
+        "asset": "supabase_{version}_linux_{arch}.tar.gz",
+        "checksums": "checksums.txt",
+        "binary": "supabase"
+      }
+    }
+  },
+  "signIn": "later",
+  "updates": "driver"
+}

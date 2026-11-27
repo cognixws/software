@@ -1,0 +1,40 @@
+{
+  "id": "git-lfs",
+  "name": "Git LFS",
+  "category": "git",
+  "summary": "Keeps large files such as models, media and datasets out of the Git history.",
+  "publisher": {
+    "name": "Git LFS",
+    "url": "https://git-lfs.com"
+  },
+  "homepage": "https://git-lfs.com",
+  "license": "MIT",
+  "keywords": [
+    "git",
+    "lfs",
+    "large files",
+    "models",
+    "datasets"
+  ],
+  "detect": {
+    "command": "git-lfs",
+    "version": [
+      "git-lfs",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "families": [
+        "apt"
+      ],
+      "driver": "apt",
+      "account": "root",
+      "packages": [
+        "git-lfs"
+      ]
+    }
+  },
+  "signIn": "none",
+  "updates": "driver"
+}

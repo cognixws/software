@@ -1,0 +1,61 @@
+{
+  "id": "qpdf",
+  "name": "QPDF",
+  "category": "documents",
+  "summary": "Splits, merges, reorders and decrypts PDF files without changing their content.",
+  "publisher": {
+    "name": "QPDF",
+    "url": "https://github.com/qpdf"
+  },
+  "homepage": "https://qpdf.sourceforge.io",
+  "license": "Apache-2.0",
+  "keywords": [
+    "pdf",
+    "split",
+    "merge",
+    "pages",
+    "decrypt",
+    "linearize"
+  ],
+  "detect": {
+    "command": "qpdf",
+    "version": [
+      "qpdf",
+      "--version"
+    ],
+    "pattern": "qpdf version ([0-9]+\\.[0-9]+\\.[0-9]+)"
+  },
+  "platforms": {
+    "wsl": {
+      "families": [
+        "apt"
+      ],
+      "driver": "apt",
+      "account": "root",
+      "packages": [
+        "qpdf"
+      ]
+    },
+    "windows": {
+      "driver": "winget",
+      "id": "QPDF.QPDF",
+      "scope": "machine"
+    }
+  },
+  "signIn": "none",
+  "updates": "driver",
+  "tier": "official",
+  "updatedAt": "2026-11-26",
+  "agent": {
+    "summary": "Takes pages out of a PDF, joins PDFs and removes a password the person knows, losslessly.",
+    "commands": [
+      "qpdf in.pdf --pages . 1-5 -- first-five.pdf",
+      "qpdf --empty --pages a.pdf b.pdf -- joined.pdf",
+      "qpdf --show-npages in.pdf"
+    ],
+    "formats": [
+      ".pdf"
+    ],
+    "caveats": "Decrypting needs the password (--password=...); QPDF does not guess one."
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "id": "codex",
+  "name": "Codex",
+  "category": "agent-clis",
+  "summary": "OpenAI's coding agent that runs in your terminal.",
+  "publisher": {
+    "name": "OpenAI",
+    "url": "https://openai.com"
+  },
+  "homepage": "https://learn.chatgpt.com/docs/codex/cli",
+  "license": "Apache-2.0",
+  "keywords": [
+    "codex",
+    "openai",
+    "chatgpt",
+    "agent",
+    "coding agent"
+  ],
+  "detect": {
+    "command": "codex",
+    "version": [
+      "codex",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "driver": "cli"
+    }
+  },
+  "dependsOn": [
+    "nodejs"
+  ],
+  "signIn": "gui",
+  "updates": "driver"
+}

@@ -1,0 +1,36 @@
+{
+  "id": "omp",
+  "name": "Omp",
+  "category": "agent-clis",
+  "summary": "oh-my-pi, a Pi fork with batteries included.",
+  "publisher": {
+    "name": "Stencil Labs",
+    "url": "https://omp.sh"
+  },
+  "homepage": "https://omp.sh/docs",
+  "license": "MIT",
+  "keywords": [
+    "omp",
+    "oh-my-pi",
+    "pi",
+    "agent",
+    "coding agent"
+  ],
+  "detect": {
+    "command": "omp",
+    "version": [
+      "omp",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "driver": "cli"
+    }
+  },
+  "dependsOn": [
+    "nodejs"
+  ],
+  "signIn": "gui",
+  "updates": "driver"
+}

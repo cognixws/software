@@ -1,14 +1,15 @@
 name: publish
 
-# A merge to main signs catalog.json and publishes it as the next release:
-# software-index.json (payload + Ed25519 signature) and the catalog it signs.
+# A merge to main assembles the catalog from entries/ and bundles/ (D5a),
+# signs it and publishes it as the next release: software-index.json (payload +
+# Ed25519 signature) and the catalog.json it signs.
 # The private key is SOFTWARE_INDEX_KEY, a secret of the "index-signing"
 # environment, which only main may use. Only the sign step reads it.
 
 on:
   push:
     branches: [main]
-    paths: ["catalog.json", "scripts/**", "keys/**"]
+    paths: ["entries/**", "bundles/**", "scripts/**", "keys/**"]
   workflow_dispatch:
 
 permissions:
@@ -30,6 +31,10 @@ jobs:
     environment: index-signing
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Assemble the catalog
+        run: node scripts/build.mjs --out catalog.json
       - name: Next serial
         id: serial
         env:
@@ -50,4 +55,4 @@ jobs:
           gh release create "v$SERIAL" software-index.json catalog.json \
             -R "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --latest \
             --title "Catalog $SERIAL" \
-            --notes "Signed index of catalog.json at $GITHUB_SHA. The signature verifies with keys/index.pub."
+            --notes "Signed index of the catalog assembled from entries/ and bundles/ at $GITHUB_SHA. The signature verifies with keys/index.pub."

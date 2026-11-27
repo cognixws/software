@@ -1,0 +1,14 @@
+{
+  "id": "office-pdf-kit",
+  "name": "Office and PDF kit",
+  "area": "documents",
+  "summary": "Convert Word, Excel and PowerPoint files, and pull text and pages out of PDFs and scans.",
+  "items": [
+    "libreoffice",
+    "pandoc",
+    "poppler",
+    "qpdf",
+    "tesseract",
+    "typst"
+  ]
+}

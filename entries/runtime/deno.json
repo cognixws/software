@@ -1,0 +1,36 @@
+{
+  "id": "deno",
+  "name": "Deno",
+  "category": "runtime",
+  "summary": "A JavaScript and TypeScript runtime with permissions and tools built in.",
+  "publisher": {
+    "name": "Deno Land",
+    "url": "https://deno.com"
+  },
+  "homepage": "https://docs.deno.com",
+  "license": "MIT",
+  "keywords": [
+    "javascript",
+    "typescript",
+    "runtime"
+  ],
+  "detect": {
+    "command": "deno",
+    "version": [
+      "deno",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "driver": "npm-global",
+      "account": "user",
+      "package": "deno"
+    }
+  },
+  "dependsOn": [
+    "nodejs"
+  ],
+  "signIn": "none",
+  "updates": "driver"
+}

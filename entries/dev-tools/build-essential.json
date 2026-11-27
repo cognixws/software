@@ -1,0 +1,41 @@
+{
+  "id": "build-essential",
+  "name": "Build tools",
+  "category": "dev-tools",
+  "summary": "gcc, g++ and make, which packages with native code need to build.",
+  "publisher": {
+    "name": "GNU Project",
+    "url": "https://www.gnu.org"
+  },
+  "homepage": "https://gcc.gnu.org",
+  "license": "GPL-3.0-or-later",
+  "keywords": [
+    "gcc",
+    "g++",
+    "make",
+    "compiler",
+    "build",
+    "native"
+  ],
+  "detect": {
+    "command": "gcc",
+    "version": [
+      "gcc",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "families": [
+        "apt"
+      ],
+      "driver": "apt",
+      "account": "root",
+      "packages": [
+        "build-essential"
+      ]
+    }
+  },
+  "signIn": "none",
+  "updates": "driver"
+}

@@ -1,0 +1,35 @@
+{
+  "id": "claude-code",
+  "name": "Claude Code",
+  "category": "agent-clis",
+  "summary": "Anthropic's agentic coding tool in your terminal.",
+  "publisher": {
+    "name": "Anthropic",
+    "url": "https://www.anthropic.com"
+  },
+  "homepage": "https://code.claude.com/docs/en/setup",
+  "license": "Proprietary",
+  "keywords": [
+    "claude",
+    "anthropic",
+    "agent",
+    "coding agent"
+  ],
+  "detect": {
+    "command": "claude",
+    "version": [
+      "claude",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "driver": "cli"
+    }
+  },
+  "dependsOn": [
+    "nodejs"
+  ],
+  "signIn": "gui",
+  "updates": "driver"
+}

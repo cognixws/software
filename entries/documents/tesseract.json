@@ -1,0 +1,71 @@
+{
+  "id": "tesseract",
+  "name": "Tesseract OCR",
+  "category": "documents",
+  "summary": "Reads text out of scans and photos, offline, in English and Portuguese.",
+  "publisher": {
+    "name": "Tesseract OCR",
+    "url": "https://github.com/tesseract-ocr"
+  },
+  "homepage": "https://tesseract-ocr.github.io",
+  "license": "Apache-2.0",
+  "keywords": [
+    "ocr",
+    "scan",
+    "image",
+    "text",
+    "recognition",
+    "portuguese"
+  ],
+  "detect": {
+    "command": "tesseract",
+    "version": [
+      "tesseract",
+      "--version"
+    ],
+    "pattern": "tesseract v?([0-9]+\\.[0-9]+\\.[0-9]+)"
+  },
+  "platforms": {
+    "wsl": {
+      "families": [
+        "apt"
+      ],
+      "driver": "apt",
+      "account": "root",
+      "packages": [
+        "tesseract-ocr",
+        "tesseract-ocr-por"
+      ],
+      "remove": {
+        "packages": [
+          "tesseract-ocr"
+        ]
+      }
+    },
+    "windows": {
+      "driver": "winget",
+      "id": "tesseract-ocr.tesseract",
+      "scope": "machine"
+    }
+  },
+  "signIn": "none",
+  "updates": "driver",
+  "tier": "official",
+  "updatedAt": "2026-11-26",
+  "agent": {
+    "summary": "Turns an image of text (a scanned page, a receipt, a screenshot) into plain text or a searchable PDF.",
+    "commands": [
+      "tesseract scan.png out -l por",
+      "tesseract page.png - -l eng",
+      "tesseract scan.png searchable -l por pdf"
+    ],
+    "formats": [
+      ".png",
+      ".jpg",
+      ".tif",
+      ".pdf",
+      ".txt"
+    ],
+    "caveats": "Reads images, not PDFs: render a scanned PDF's pages first (pdftoppm -r 300). On Linux, English and Portuguese come with it; another language needs its own package, such as tesseract-ocr-fra for French."
+  }
+}

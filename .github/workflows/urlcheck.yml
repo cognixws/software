@@ -1,0 +1,62 @@
+name: urlcheck
+
+# The daily broken-URL check: every address an entry stands on (homepage,
+# pinned release assets per architecture, vendor script, apt repository and
+# key, node list, npm and PyPI packages, winget manifest). A failure opens
+# one issue, labeled broken-source, and keeps it up to date; a clean day
+# closes it. The report lists addresses only, and the job holds no secret
+# beyond the workflow's own read-only token.
+
+on:
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: urlcheck
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check every address
+        id: check
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set +e
+          node scripts/urlcheck.mjs --report "$RUNNER_TEMP/report.md" > /dev/null
+          code=$?
+          cat "$RUNNER_TEMP/report.md" >> "$GITHUB_STEP_SUMMARY" 2>/dev/null
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          # 1 is "something is broken", reported below; anything else is the script failing.
+          if [ "$code" -gt 1 ]; then echo "the check could not run (exit $code)" >&2; exit "$code"; fi
+      - name: Keep the issue current
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CODE: ${{ steps.check.outputs.code }}
+        run: |
+          gh label create broken-source --color B60205 --description "A catalog entry's address no longer works" --force >/dev/null
+          number=$(gh issue list --label broken-source --state open --json number --jq '.[0].number // empty')
+          if [ "$CODE" = "1" ]; then
+            if [ -n "$number" ]; then
+              gh issue edit "$number" --body-file "$RUNNER_TEMP/report.md"
+              echo "updated issue #$number"
+            else
+              gh issue create --label broken-source --title "Catalog sources that no longer answer" --body-file "$RUNNER_TEMP/report.md"
+            fi
+          elif [ -n "$number" ]; then
+            gh issue close "$number" --comment "Every address answers again ($(date -u +%F))."
+          fi
+      - name: Fail the run when something is broken
+        if: steps.check.outputs.code == '1'
+        run: exit 1

@@ -1,0 +1,114 @@
+name: curate
+
+# The weekly catalog refresh (OD4). Mondays 06:00 UTC it looks for newer
+# upstream releases of every pinned github-release entry, holds back what fails
+# (24 h cool-off, a missing or renamed asset, a changed license, a failed run in
+# clean ubuntu:24.04 and debian:12 containers), and opens ONE pull request with
+# the pins it moved and an audit table. It never merges and never signs: a
+# maintainer reviews the pull request, and only the merge reaches publish.yml
+# and its signing environment. That holds when main requires a pull request and
+# this repository's checks (branch protection): a fine-grained token cannot be
+# limited to curator/* branches, so protection is what stops it pushing to
+# main. A week where candidates are held back, or pins are only reported, opens
+# or updates the issue labeled curator-notes instead of a pull request.
+#
+# The token is CURATOR_TOKEN: a fine-grained token or GitHub App token scoped to
+# this repository with Contents and Pull requests write, nothing else. The
+# workflow's own GITHUB_TOKEN is read-only; CURATOR_TOKEN is exposed to the one
+# step that pushes and opens the pull request, never to the scripts that read
+# upstream, so the signing key (an environment
+# secret of publish.yml) and the maintainers' credentials are never in reach of
+# this job. A pull request made with CURATOR_TOKEN, unlike one made with
+# GITHUB_TOKEN, runs the validate workflow.
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Report only: change nothing, open nothing"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: curate
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      DRY_RUN: ${{ inputs.dry_run }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: The token is there
+        if: env.DRY_RUN != 'true'
+        env:
+          CURATOR_TOKEN: ${{ secrets.CURATOR_TOKEN }}
+        run: |
+          if [ -z "$CURATOR_TOKEN" ]; then
+            echo "CURATOR_TOKEN is not set: add it as a repository secret (see curate.yml)" >&2
+            exit 1
+          fi
+      - name: Refresh the pins
+        id: refresh
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          flags=(--smoke --report "$RUNNER_TEMP/audit.md" --summary "$RUNNER_TEMP/summary.json")
+          if [ "$DRY_RUN" = "true" ]; then flags+=(--dry-run); fi
+          node scripts/curate.mjs "${flags[@]}"
+          cat "$RUNNER_TEMP/audit.md" >> "$GITHUB_STEP_SUMMARY"
+      - name: What was changed is still a valid registry
+        if: steps.refresh.outputs.changed == 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          node --test scripts/*.test.mjs
+          node scripts/build.mjs --check
+          mapfile -t files < <(git diff --name-only -- entries)
+          args=()
+          for f in "${files[@]}"; do args+=(--entry "$f"); done
+          node scripts/validate.mjs --online "${args[@]}"
+      - name: Open or update the one pull request
+        if: steps.refresh.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.CURATOR_TOKEN }}
+        run: |
+          branch=curator/weekly
+          git config user.name "cognixws-curator"
+          git config user.email "curator@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add -- entries
+          git commit -q -m "catalog: weekly refresh $(date -u +%F)" -m "Pins moved by .github/workflows/curate.yml; the audit table is in the pull request."
+          gh auth setup-git
+          # The branch is the bot's own and is rebuilt from main each week.
+          git push --force origin "$branch"
+          title="catalog: weekly refresh $(date -u +%F)"
+          number=$(gh pr list --head "$branch" --state open --json number --jq '.[0].number // empty')
+          if [ -n "$number" ]; then
+            gh pr edit "$number" --title "$title" --body-file "$RUNNER_TEMP/audit.md"
+            echo "updated pull request #$number"
+          else
+            gh pr create --head "$branch" --base main --title "$title" --body-file "$RUNNER_TEMP/audit.md"
+          fi
+      - name: Held-back candidates and reported pins go to one issue
+        if: steps.refresh.outputs.notes == 'true' && env.DRY_RUN != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label create curator-notes --color 0E8A16 --description "Weekly refresh: held-back candidates and reported pins" --force >/dev/null
+          number=$(gh issue list --label curator-notes --state open --json number --jq '.[0].number // empty')
+          if [ -n "$number" ]; then
+            gh issue edit "$number" --body-file "$RUNNER_TEMP/audit.md"
+          else
+            gh issue create --label curator-notes --title "Catalog refresh: held back or to re-prove" --body-file "$RUNNER_TEMP/audit.md"
+          fi

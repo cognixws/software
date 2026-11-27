@@ -1,0 +1,38 @@
+{
+  "id": "sqlite3",
+  "name": "SQLite",
+  "category": "data",
+  "summary": "Opens and queries SQLite database files from the terminal.",
+  "publisher": {
+    "name": "SQLite",
+    "url": "https://sqlite.org"
+  },
+  "homepage": "https://sqlite.org/cli.html",
+  "license": "blessing",
+  "keywords": [
+    "sqlite",
+    "database",
+    "sql"
+  ],
+  "detect": {
+    "command": "sqlite3",
+    "version": [
+      "sqlite3",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "families": [
+        "apt"
+      ],
+      "driver": "apt",
+      "account": "root",
+      "packages": [
+        "sqlite3"
+      ]
+    }
+  },
+  "signIn": "none",
+  "updates": "driver"
+}

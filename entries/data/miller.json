@@ -1,0 +1,61 @@
+{
+  "id": "miller",
+  "name": "Miller",
+  "category": "data",
+  "summary": "Cleans, joins, sorts and sums large CSV, TSV and JSON files, keeping their headers.",
+  "publisher": {
+    "name": "John Kerl",
+    "url": "https://github.com/johnkerl"
+  },
+  "homepage": "https://miller.readthedocs.io",
+  "license": "BSD-2-Clause",
+  "keywords": [
+    "mlr",
+    "csv",
+    "tsv",
+    "json",
+    "clean",
+    "join",
+    "sort"
+  ],
+  "detect": {
+    "command": "mlr",
+    "version": [
+      "mlr",
+      "--version"
+    ],
+    "pattern": "mlr v?([0-9]+\\.[0-9]+\\.[0-9]+)"
+  },
+  "platforms": {
+    "wsl": {
+      "families": [
+        "apt"
+      ],
+      "driver": "apt",
+      "account": "root",
+      "packages": [
+        "miller"
+      ]
+    }
+  },
+  "signIn": "none",
+  "updates": "driver",
+  "tier": "official",
+  "recommended": true,
+  "updatedAt": "2026-11-26",
+  "agent": {
+    "summary": "Streams tabular files of any size by column name: filter, group, sum, join and convert between CSV and JSON.",
+    "commands": [
+      "mlr --icsv --opprint stats1 -a sum -f revenue -g region sales.csv",
+      "mlr --icsv --ojson cat sales.csv",
+      "mlr --csv filter '$revenue > 1000' sales.csv"
+    ],
+    "formats": [
+      ".csv",
+      ".tsv",
+      ".json",
+      ".txt"
+    ],
+    "caveats": "The command is mlr. Verbs and flags changed in Miller 6; examples written for Miller 5 may fail."
+  }
+}

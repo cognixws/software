@@ -1,0 +1,32 @@
+{
+  "id": "grok",
+  "name": "Grok",
+  "category": "agent-clis",
+  "summary": "xAI's Grok as a coding agent in your terminal.",
+  "publisher": {
+    "name": "xAI",
+    "url": "https://x.ai"
+  },
+  "homepage": "https://docs.x.ai/build/cli/reference",
+  "license": "Proprietary",
+  "keywords": [
+    "grok",
+    "xai",
+    "agent",
+    "coding agent"
+  ],
+  "detect": {
+    "command": "grok",
+    "version": [
+      "grok",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "driver": "cli"
+    }
+  },
+  "signIn": "gui",
+  "updates": "driver"
+}

@@ -1,0 +1,30 @@
+{
+  "id": "curl",
+  "name": "curl",
+  "category": "runtime",
+  "required": true,
+  "summary": "Downloads what installs and updates need.",
+  "publisher": {
+    "name": "curl",
+    "url": "https://curl.se"
+  },
+  "homepage": "https://curl.se",
+  "license": "curl",
+  "keywords": [
+    "curl",
+    "download",
+    "http"
+  ],
+  "detect": {
+    "command": "curl",
+    "version": [
+      "curl",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "driver": "setup"
+    }
+  }
+}
