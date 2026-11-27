@@ -39,7 +39,7 @@ reviewer merges only when every line below holds.
   own distribution (never a personal fork). A pull request from outside the
   maintainers that says `official` is changed to `community` or refused.
 - A community entry is one file and changes nothing that checks or signs the
-  registry; CI checks it (from the base commit, by the author's standing on GitHub, not by the tier the file claims); the reviewer confirms the license and the source, and `main`'s branch protection is what makes the check binding.
+  registry; CI checks it (from the base commit, by whether it comes from a fork, not by the tier the file claims); the reviewer confirms the license and the source, and `main`'s branch protection is what makes the check binding.
 - The weekly refresh's pull request (`curator/weekly`) is read as a diff of
   pins: the audit table's held-back rows and any `license` line are the part
   to read twice. Merge it only when its checks are green.

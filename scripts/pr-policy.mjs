@@ -3,8 +3,10 @@
 // PR changes against its base and refuses (the workflow runs this file from the
 // BASE commit, so a pull request cannot edit its own judge):
 //   - an entry that is not under entries/<area>/<id>.json,
-//   - an outside contribution, which is a pull request whose author is not an
-//     owner, member or collaborator, or any PR that adds a community-tier
+//   - an outside contribution, which is a pull request from a fork (only
+//     someone with write access can open one from a branch of this repository;
+//     GitHub's author_association is not used because it reads CONTRIBUTOR for
+//     a private organization member), or any PR that adds a community-tier
 //     entry: it is ONE entry file (no second entry, no deletion), at most one
 //     new starter set, and nothing that changes how the registry is checked
 //     or signed (scripts, workflows, keys); an outside author's entry must say
@@ -13,7 +15,7 @@
 // It prints the changed entry files, one per line, for the workflow to hand to
 // validate.mjs --entry.
 //
-// Run: node scripts/pr-policy.mjs BASE_SHA [HEAD_SHA] [AUTHOR_ASSOCIATION]
+// Run: node scripts/pr-policy.mjs BASE_SHA [HEAD_SHA] [fork]
 
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -23,8 +25,7 @@ const entryRe = /^entries\/[a-z0-9-]+\/[a-z0-9][a-z0-9-]{0,39}\.json$/;
 const guarded = /^(scripts\/|\.github\/|keys\/|\.gitignore$|package(-lock)?\.json$)/;
 
 // changes: [{ status: "A"|"M"|"D"|"R", path }], tierOf(path) → the head file's tier,
-// outside: the author is not a maintainer (author_association).
-export const trusted = new Set(["OWNER", "MEMBER", "COLLABORATOR"]);
+// outside: the pull request comes from a fork.
 export function policy(changes, tierOf, outside = false) {
   const problems = [];
   const entries = changes.filter((c) => c.path.startsWith("entries/") && c.status !== "D");
@@ -43,7 +44,7 @@ export function policy(changes, tierOf, outside = false) {
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const [base, head = "HEAD", assoc = ""] = process.argv.slice(2);
+  const [base, head = "HEAD", origin = ""] = process.argv.slice(2);
   if (!/^[0-9a-f]{7,64}$/.test(base ?? "")) {
     console.error("usage: pr-policy.mjs BASE_SHA [HEAD_SHA]");
     process.exit(2);
@@ -61,7 +62,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       return "";
     }
   };
-  const { problems, entries } = policy(changes, tierOf, assoc !== "" && !trusted.has(assoc));
+  const { problems, entries } = policy(changes, tierOf, origin === "fork");
   if (problems.length) {
     console.error(`${problems.length} problem(s):`);
     for (const p of problems) console.error(`  - ${p}`);
