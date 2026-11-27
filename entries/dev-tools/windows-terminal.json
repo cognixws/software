@@ -1,0 +1,27 @@
+{
+  "id": "windows-terminal",
+  "name": "Windows Terminal",
+  "category": "dev-tools",
+  "summary": "Microsoft's terminal app for PowerShell, Command Prompt and WSL.",
+  "publisher": {
+    "name": "Microsoft",
+    "url": "https://www.microsoft.com"
+  },
+  "homepage": "https://learn.microsoft.com/windows/terminal/",
+  "license": "MIT",
+  "keywords": [
+    "terminal",
+    "console",
+    "shell",
+    "windows"
+  ],
+  "platforms": {
+    "windows": {
+      "driver": "winget",
+      "id": "Microsoft.WindowsTerminal",
+      "scope": "user"
+    }
+  },
+  "signIn": "none",
+  "updates": "driver"
+}

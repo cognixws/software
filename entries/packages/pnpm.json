@@ -1,0 +1,38 @@
+{
+  "id": "pnpm",
+  "name": "pnpm",
+  "category": "packages",
+  "summary": "A fast, disk-efficient package manager for JavaScript projects.",
+  "publisher": {
+    "name": "pnpm",
+    "url": "https://pnpm.io"
+  },
+  "homepage": "https://pnpm.io",
+  "license": "MIT",
+  "keywords": [
+    "npm",
+    "javascript",
+    "node",
+    "packages",
+    "monorepo"
+  ],
+  "detect": {
+    "command": "pnpm",
+    "version": [
+      "pnpm",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "driver": "npm-global",
+      "account": "user",
+      "package": "pnpm"
+    }
+  },
+  "dependsOn": [
+    "nodejs"
+  ],
+  "signIn": "none",
+  "updates": "driver"
+}

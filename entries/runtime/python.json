@@ -1,0 +1,27 @@
+{
+  "id": "python",
+  "name": "Python 3.13",
+  "category": "runtime",
+  "summary": "The Python language and its launcher, py, for Windows.",
+  "publisher": {
+    "name": "Python Software Foundation",
+    "url": "https://www.python.org"
+  },
+  "homepage": "https://www.python.org/downloads/windows/",
+  "license": "PSF-2.0",
+  "keywords": [
+    "python",
+    "py",
+    "pip",
+    "windows"
+  ],
+  "platforms": {
+    "windows": {
+      "driver": "winget",
+      "id": "Python.Python.3.13",
+      "scope": "user"
+    }
+  },
+  "signIn": "none",
+  "updates": "driver"
+}

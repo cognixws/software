@@ -1,0 +1,36 @@
+{
+  "id": "opencode",
+  "name": "OpenCode",
+  "category": "agent-clis",
+  "summary": "An open source coding agent that works with many model providers.",
+  "publisher": {
+    "name": "Anomaly",
+    "url": "https://github.com/anomalyco"
+  },
+  "homepage": "https://opencode.ai/docs",
+  "license": "MIT",
+  "keywords": [
+    "opencode",
+    "anomaly",
+    "sst",
+    "agent",
+    "coding agent"
+  ],
+  "detect": {
+    "command": "opencode",
+    "version": [
+      "opencode",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "driver": "cli"
+    }
+  },
+  "dependsOn": [
+    "nodejs"
+  ],
+  "signIn": "gui",
+  "updates": "driver"
+}

@@ -1,0 +1,41 @@
+{
+  "id": "uv",
+  "name": "uv",
+  "category": "packages",
+  "summary": "A fast Python package and project manager that also installs Python itself.",
+  "publisher": {
+    "name": "Astral",
+    "url": "https://astral.sh"
+  },
+  "homepage": "https://docs.astral.sh/uv/",
+  "license": "MIT OR Apache-2.0",
+  "keywords": [
+    "python",
+    "pip",
+    "uvx",
+    "packages",
+    "venv"
+  ],
+  "detect": {
+    "command": "uv",
+    "version": [
+      "uv",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "driver": "vendor-script",
+      "account": "user",
+      "hosts": [
+        "astral.sh"
+      ],
+      "script": "https://astral.sh/uv/install.sh",
+      "env": {
+        "UV_NO_MODIFY_PATH": "1"
+      }
+    }
+  },
+  "signIn": "none",
+  "updates": "vendor"
+}

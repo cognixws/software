@@ -1,0 +1,27 @@
+{
+  "id": "vscode",
+  "name": "Visual Studio Code",
+  "category": "dev-tools",
+  "summary": "Microsoft's code editor, with WSL and remote folders.",
+  "publisher": {
+    "name": "Microsoft",
+    "url": "https://www.microsoft.com"
+  },
+  "homepage": "https://code.visualstudio.com",
+  "license": "Proprietary",
+  "keywords": [
+    "editor",
+    "code",
+    "ide",
+    "windows"
+  ],
+  "platforms": {
+    "windows": {
+      "driver": "winget",
+      "id": "Microsoft.VisualStudioCode",
+      "scope": "user"
+    }
+  },
+  "signIn": "none",
+  "updates": "driver"
+}

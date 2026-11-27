@@ -1,0 +1,71 @@
+{
+  "id": "docker",
+  "name": "Docker Engine",
+  "category": "containers",
+  "summary": "Run containers in your Linux environment.",
+  "publisher": {
+    "name": "Docker Inc.",
+    "url": "https://www.docker.com"
+  },
+  "homepage": "https://docs.docker.com/engine/",
+  "license": "Apache-2.0",
+  "keywords": [
+    "docker",
+    "compose",
+    "buildx",
+    "containers"
+  ],
+  "detect": {
+    "command": "docker",
+    "version": [
+      "docker",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "families": [
+        "apt"
+      ],
+      "driver": "apt-repo",
+      "account": "root",
+      "hosts": [
+        "download.docker.com"
+      ],
+      "repo": {
+        "url": "https://download.docker.com/linux/{base}",
+        "suite": "{codename}",
+        "components": "stable",
+        "key": "https://download.docker.com/linux/{base}/gpg",
+        "fingerprint": "9DC858229FC7DD38854AE2D88D81803C0EBFCD88"
+      },
+      "packages": [
+        "docker-ce",
+        "docker-ce-cli",
+        "containerd.io",
+        "docker-buildx-plugin",
+        "docker-compose-plugin"
+      ],
+      "conflicts": [
+        "docker.io",
+        "podman-docker"
+      ],
+      "after": [
+        "docker-access"
+      ],
+      "remove": {
+        "packages": [
+          "docker-ce",
+          "docker-ce-cli",
+          "containerd.io",
+          "docker-buildx-plugin",
+          "docker-compose-plugin"
+        ],
+        "keeps": "images and volumes"
+      }
+    }
+  },
+  "grants": "Anyone who can use Docker gets full administrator control of this Linux environment.",
+  "signIn": "none",
+  "updates": "driver"
+}

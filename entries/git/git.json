@@ -1,0 +1,34 @@
+{
+  "id": "git",
+  "name": "Git",
+  "category": "git",
+  "required": true,
+  "summary": "Version control for every workspace.",
+  "publisher": {
+    "name": "The Git project",
+    "url": "https://git-scm.com"
+  },
+  "homepage": "https://git-scm.com",
+  "license": "GPL-2.0-only",
+  "keywords": [
+    "git",
+    "version control"
+  ],
+  "detect": {
+    "command": "git",
+    "version": [
+      "git",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "driver": "setup"
+    },
+    "windows": {
+      "driver": "winget",
+      "id": "Git.Git",
+      "scope": "user"
+    }
+  }
+}

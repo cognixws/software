@@ -1,0 +1,55 @@
+{
+  "id": "tailscale",
+  "name": "Tailscale",
+  "category": "networking",
+  "summary": "Reach this computer from your other devices over a private network.",
+  "publisher": {
+    "name": "Tailscale Inc.",
+    "url": "https://tailscale.com"
+  },
+  "homepage": "https://tailscale.com/kb/1031/install-linux",
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "tailscale",
+    "vpn",
+    "wireguard",
+    "network",
+    "remote"
+  ],
+  "detect": {
+    "command": "tailscale",
+    "version": [
+      "tailscale",
+      "version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "families": [
+        "apt"
+      ],
+      "driver": "apt-repo",
+      "account": "root",
+      "hosts": [
+        "pkgs.tailscale.com"
+      ],
+      "repo": {
+        "url": "https://pkgs.tailscale.com/stable/{base}",
+        "suite": "{codename}",
+        "components": "main",
+        "key": "https://pkgs.tailscale.com/stable/{base}/{codename}.noarmor.gpg",
+        "fingerprint": "2596A99EAAB33821893C0A79458CA832957F5868"
+      },
+      "packages": [
+        "tailscale"
+      ]
+    },
+    "windows": {
+      "driver": "winget",
+      "id": "Tailscale.Tailscale",
+      "scope": "machine"
+    }
+  },
+  "signIn": "later",
+  "updates": "driver"
+}

@@ -1,0 +1,85 @@
+{
+  "id": "libreoffice",
+  "name": "LibreOffice",
+  "category": "documents",
+  "summary": "Opens and converts Word, Excel and PowerPoint files, and turns them into PDF.",
+  "publisher": {
+    "name": "The Document Foundation",
+    "url": "https://www.documentfoundation.org"
+  },
+  "homepage": "https://www.libreoffice.org",
+  "license": "MPL-2.0",
+  "keywords": [
+    "office",
+    "word",
+    "excel",
+    "powerpoint",
+    "pdf",
+    "writer",
+    "calc",
+    "impress",
+    "soffice"
+  ],
+  "detect": {
+    "command": "soffice",
+    "version": [
+      "soffice",
+      "--version"
+    ],
+    "pattern": "LibreOffice ([0-9]+\\.[0-9]+\\.[0-9]+)"
+  },
+  "platforms": {
+    "wsl": {
+      "families": [
+        "apt"
+      ],
+      "driver": "apt",
+      "account": "root",
+      "noRecommends": true,
+      "packages": [
+        "libreoffice-writer",
+        "libreoffice-calc",
+        "libreoffice-impress",
+        "libreoffice-draw",
+        "libreoffice-core",
+        "libreoffice-base-core",
+        "libreoffice-common"
+      ]
+    },
+    "windows": {
+      "driver": "winget",
+      "id": "TheDocumentFoundation.LibreOffice",
+      "scope": "machine"
+    }
+  },
+  "signIn": "none",
+  "updates": "driver",
+  "tier": "official",
+  "recommended": true,
+  "approxSizeMB": 500,
+  "updatedAt": "2026-11-26",
+  "agent": {
+    "summary": "Converts office documents to PDF or to another office format with the layout kept, without opening a window.",
+    "commands": [
+      "soffice --headless --convert-to pdf --outdir out report.docx",
+      "soffice --headless --convert-to xlsx data.ods",
+      "soffice --headless --convert-to docx notes.odt"
+    ],
+    "formats": [
+      ".docx",
+      ".doc",
+      ".xlsx",
+      ".xls",
+      ".pptx",
+      ".ppt",
+      ".odt",
+      ".ods",
+      ".odp",
+      ".rtf",
+      ".csv",
+      ".pdf"
+    ],
+    "caveats": "One conversion at a time per user profile: a second soffice started while one runs waits or exits. Installed without recommended extras, so fonts the document names may be replaced.",
+    "extension": "cognix-office"
+  }
+}

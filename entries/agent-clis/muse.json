@@ -1,0 +1,32 @@
+{
+  "id": "muse",
+  "name": "Muse Code",
+  "category": "agent-clis",
+  "summary": "Meta's coding agent for the terminal.",
+  "publisher": {
+    "name": "Meta",
+    "url": "https://dev.meta.ai"
+  },
+  "homepage": "https://dev.meta.ai/docs/muse-code",
+  "license": "Proprietary",
+  "keywords": [
+    "muse",
+    "meta",
+    "agent",
+    "coding agent"
+  ],
+  "detect": {
+    "command": "muse",
+    "version": [
+      "muse",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "driver": "cli"
+    }
+  },
+  "signIn": "gui",
+  "updates": "driver"
+}

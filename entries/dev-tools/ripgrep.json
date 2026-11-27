@@ -1,0 +1,44 @@
+{
+  "id": "ripgrep",
+  "name": "ripgrep",
+  "category": "dev-tools",
+  "summary": "Searches file contents fast and skips what .gitignore hides; agent CLIs use it to find code.",
+  "publisher": {
+    "name": "Andrew Gallant",
+    "url": "https://github.com/BurntSushi"
+  },
+  "homepage": "https://github.com/BurntSushi/ripgrep",
+  "license": "MIT OR Unlicense",
+  "keywords": [
+    "rg",
+    "grep",
+    "search",
+    "code search"
+  ],
+  "detect": {
+    "command": "rg",
+    "version": [
+      "rg",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "families": [
+        "apt"
+      ],
+      "driver": "apt",
+      "account": "root",
+      "packages": [
+        "ripgrep"
+      ]
+    },
+    "windows": {
+      "driver": "winget",
+      "id": "BurntSushi.ripgrep.MSVC",
+      "scope": "user"
+    }
+  },
+  "signIn": "none",
+  "updates": "driver"
+}

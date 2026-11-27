@@ -1,0 +1,76 @@
+{
+  "id": "duckdb",
+  "name": "DuckDB CLI",
+  "category": "data",
+  "summary": "Runs fast SQL over CSV, Parquet, JSON and Excel files without loading them into a database.",
+  "publisher": {
+    "name": "DuckDB Foundation",
+    "url": "https://duckdb.org"
+  },
+  "homepage": "https://duckdb.org",
+  "license": "MIT",
+  "keywords": [
+    "sql",
+    "csv",
+    "parquet",
+    "json",
+    "analytics",
+    "query",
+    "spreadsheet"
+  ],
+  "detect": {
+    "command": "duckdb",
+    "version": [
+      "duckdb",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "driver": "github-release",
+      "account": "user",
+      "hosts": [
+        "github.com",
+        "objects.githubusercontent.com",
+        "release-assets.githubusercontent.com"
+      ],
+      "release": {
+        "repo": "duckdb/duckdb",
+        "asset": "duckdb-cli-linux-{arch}.tar.gz",
+        "binary": "duckdb",
+        "version": "2.0.1",
+        "sha256": {
+          "amd64": "b676268be4d39e4e41a904442c9796c9914e645cc085c7505f048f2c992b5eca",
+          "arm64": "84e37891fcc45c887e30220f51a4914995cd8174139e87f8efd311ac83c956a7"
+        }
+      }
+    },
+    "windows": {
+      "driver": "winget",
+      "id": "DuckDB.cli",
+      "scope": "user"
+    }
+  },
+  "signIn": "none",
+  "updates": "driver",
+  "tier": "official",
+  "recommended": true,
+  "updatedAt": "2026-11-26",
+  "agent": {
+    "summary": "Answers questions about data files with SQL and writes summaries back as CSV or Parquet.",
+    "commands": [
+      "duckdb -c \"SELECT region, SUM(revenue) FROM 'sales.csv' GROUP BY 1\"",
+      "duckdb -c \"COPY (SELECT * FROM 'sales.csv') TO 'sales.parquet' (FORMAT PARQUET)\"",
+      "duckdb -c \"INSTALL excel; SELECT * FROM 'report.xlsx'\""
+    ],
+    "formats": [
+      ".csv",
+      ".parquet",
+      ".json",
+      ".xlsx",
+      ".sqlite",
+      ".db"
+    ],
+    "caveats": "Excel files need DuckDB's excel extension: run INSTALL excel; once, which downloads it from DuckDB's extension server. Without a connection, convert the sheet to CSV first."
+  }
+}

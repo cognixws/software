@@ -1,0 +1,38 @@
+{
+  "id": "bun",
+  "name": "Bun",
+  "category": "runtime",
+  "summary": "A JavaScript runtime, package manager and test runner in one fast binary.",
+  "publisher": {
+    "name": "Oven",
+    "url": "https://oven.sh"
+  },
+  "homepage": "https://bun.sh",
+  "license": "MIT",
+  "keywords": [
+    "javascript",
+    "typescript",
+    "runtime",
+    "bunx",
+    "packages"
+  ],
+  "detect": {
+    "command": "bun",
+    "version": [
+      "bun",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "driver": "npm-global",
+      "account": "user",
+      "package": "bun"
+    }
+  },
+  "dependsOn": [
+    "nodejs"
+  ],
+  "signIn": "none",
+  "updates": "driver"
+}

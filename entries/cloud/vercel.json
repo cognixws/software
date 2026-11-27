@@ -1,0 +1,40 @@
+{
+  "id": "vercel",
+  "name": "Vercel CLI",
+  "category": "cloud",
+  "summary": "Deploy and manage Vercel projects from the terminal.",
+  "publisher": {
+    "name": "Vercel",
+    "url": "https://vercel.com"
+  },
+  "homepage": "https://vercel.com/docs/cli",
+  "license": "Apache-2.0",
+  "keywords": [
+    "vercel",
+    "deploy",
+    "hosting",
+    "next.js"
+  ],
+  "detect": {
+    "command": "vercel",
+    "version": [
+      "vercel",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "driver": "npm-global",
+      "account": "user",
+      "package": "vercel",
+      "env": {
+        "VERCEL_TELEMETRY_DISABLED": "1"
+      }
+    }
+  },
+  "dependsOn": [
+    "nodejs"
+  ],
+  "signIn": "later",
+  "updates": "driver"
+}

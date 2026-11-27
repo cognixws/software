@@ -1,0 +1,43 @@
+{
+  "id": "jq",
+  "name": "jq",
+  "category": "dev-tools",
+  "summary": "Reads, filters and reshapes JSON on the command line.",
+  "publisher": {
+    "name": "jqlang",
+    "url": "https://jqlang.org"
+  },
+  "homepage": "https://jqlang.org",
+  "license": "MIT",
+  "keywords": [
+    "json",
+    "filter",
+    "query"
+  ],
+  "detect": {
+    "command": "jq",
+    "version": [
+      "jq",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "families": [
+        "apt"
+      ],
+      "driver": "apt",
+      "account": "root",
+      "packages": [
+        "jq"
+      ]
+    },
+    "windows": {
+      "driver": "winget",
+      "id": "jqlang.jq",
+      "scope": "user"
+    }
+  },
+  "signIn": "none",
+  "updates": "driver"
+}

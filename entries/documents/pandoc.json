@@ -1,0 +1,69 @@
+{
+  "id": "pandoc",
+  "name": "Pandoc",
+  "category": "documents",
+  "summary": "Converts between Markdown, Word, HTML, EPUB and LaTeX, and writes PowerPoint.",
+  "publisher": {
+    "name": "John MacFarlane",
+    "url": "https://github.com/jgm"
+  },
+  "homepage": "https://pandoc.org",
+  "license": "GPL-2.0-or-later",
+  "keywords": [
+    "markdown",
+    "word",
+    "docx",
+    "html",
+    "epub",
+    "latex",
+    "convert"
+  ],
+  "detect": {
+    "command": "pandoc",
+    "version": [
+      "pandoc",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "families": [
+        "apt"
+      ],
+      "driver": "apt",
+      "account": "root",
+      "packages": [
+        "pandoc"
+      ]
+    },
+    "windows": {
+      "driver": "winget",
+      "id": "JohnMacFarlane.Pandoc",
+      "scope": "user"
+    }
+  },
+  "signIn": "none",
+  "updates": "driver",
+  "tier": "official",
+  "recommended": true,
+  "updatedAt": "2026-11-26",
+  "agent": {
+    "summary": "Turns Markdown an agent writes into Word, HTML or slides, and Word files into Markdown it can read.",
+    "commands": [
+      "pandoc notes.md -o notes.docx",
+      "pandoc report.docx -t gfm -o report.md",
+      "pandoc slides.md -o slides.pptx"
+    ],
+    "formats": [
+      ".md",
+      ".docx",
+      ".html",
+      ".epub",
+      ".tex",
+      ".odt",
+      ".rtf",
+      ".pptx"
+    ],
+    "caveats": "Never reads PDF. The Linux distribution's version decides what it reads: reading .pptx needs Pandoc 3.8.3 or later, newer than Ubuntu 24.04 ships; convert it with LibreOffice first."
+  }
+}

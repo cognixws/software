@@ -1,0 +1,40 @@
+{
+  "id": "ffmpeg",
+  "name": "FFmpeg",
+  "category": "media",
+  "summary": "Converts, cuts and records audio and video from the command line.",
+  "publisher": {
+    "name": "FFmpeg",
+    "url": "https://ffmpeg.org"
+  },
+  "homepage": "https://ffmpeg.org",
+  "license": "GPL-2.0-or-later",
+  "keywords": [
+    "video",
+    "audio",
+    "convert",
+    "media",
+    "transcode"
+  ],
+  "detect": {
+    "command": "ffmpeg",
+    "version": [
+      "ffmpeg",
+      "-version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "families": [
+        "apt"
+      ],
+      "driver": "apt",
+      "account": "root",
+      "packages": [
+        "ffmpeg"
+      ]
+    }
+  },
+  "signIn": "none",
+  "updates": "driver"
+}

@@ -1,0 +1,45 @@
+{
+  "id": "nodejs",
+  "name": "Node.js",
+  "category": "runtime",
+  "summary": "Runs the agent CLIs and tools that ship as npm packages.",
+  "publisher": {
+    "name": "OpenJS Foundation",
+    "url": "https://openjsf.org"
+  },
+  "homepage": "https://nodejs.org",
+  "license": "MIT",
+  "keywords": [
+    "node",
+    "nodejs",
+    "npm",
+    "npx",
+    "javascript",
+    "lts"
+  ],
+  "detect": {
+    "command": "node",
+    "version": [
+      "node",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "driver": "node-dist",
+      "account": "user",
+      "hosts": [
+        "nodejs.org"
+      ],
+      "dist": {
+        "version": "24.22.2",
+        "sha256": {
+          "linux-x64": "361718c444e49af2ca5a110c83ba6a8901143f23ab285ebbef0341f391f482a9",
+          "linux-arm64": "95c264150aceb7f3437a29fd6984924f5f8d1511ea3cbd6c508b83f6c555dae2"
+        }
+      }
+    }
+  },
+  "signIn": "none",
+  "updates": "driver"
+}

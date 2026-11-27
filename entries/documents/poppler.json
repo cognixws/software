@@ -1,0 +1,60 @@
+{
+  "id": "poppler",
+  "name": "Poppler utilities",
+  "category": "documents",
+  "summary": "Pulls text, images and details out of PDF files, and joins them.",
+  "publisher": {
+    "name": "freedesktop.org",
+    "url": "https://www.freedesktop.org"
+  },
+  "homepage": "https://poppler.freedesktop.org",
+  "license": "GPL-2.0-or-later",
+  "keywords": [
+    "pdf",
+    "pdftotext",
+    "pdfinfo",
+    "pdfimages",
+    "pdftoppm",
+    "pdfunite",
+    "extract"
+  ],
+  "detect": {
+    "command": "pdftotext",
+    "version": [
+      "pdftotext",
+      "-v"
+    ],
+    "pattern": "pdftotext version ([0-9]+\\.[0-9]+\\.[0-9]+)"
+  },
+  "platforms": {
+    "wsl": {
+      "families": [
+        "apt"
+      ],
+      "driver": "apt",
+      "account": "root",
+      "packages": [
+        "poppler-utils"
+      ]
+    }
+  },
+  "signIn": "none",
+  "updates": "driver",
+  "tier": "official",
+  "updatedAt": "2026-11-26",
+  "agent": {
+    "summary": "Reads the text of a PDF with its layout, renders pages as images for OCR, and merges PDFs.",
+    "commands": [
+      "pdftotext -layout invoice.pdf -",
+      "pdfinfo contract.pdf",
+      "pdftoppm -r 300 -png scan.pdf page",
+      "pdfunite a.pdf b.pdf both.pdf"
+    ],
+    "formats": [
+      ".pdf",
+      ".png",
+      ".txt"
+    ],
+    "caveats": "A scanned PDF has no text to extract: render its pages with pdftoppm and read them with Tesseract."
+  }
+}

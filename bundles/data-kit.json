@@ -1,0 +1,11 @@
+{
+  "id": "data-kit",
+  "name": "Data and spreadsheets kit",
+  "area": "data",
+  "summary": "Clean, join and summarize CSV and JSON files, and query SQLite databases.",
+  "items": [
+    "duckdb",
+    "miller",
+    "sqlite3"
+  ]
+}

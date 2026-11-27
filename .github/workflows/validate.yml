@@ -3,11 +3,18 @@ name: validate
 # Every pull request and every push: the schema COGNIX[WS] enforces, each
 # entry's official source, and each apt package on Ubuntu 24.04 and Debian 12.
 # publish.yml runs this same workflow before it signs.
+#
+# A pull request is checked as the change it is (D5a): pr-policy.mjs says which
+# entry files it changes and refuses a community entry that comes with anything
+# else; the online check, which downloads each pinned asset and compares its
+# SHA-256 with the pin, runs on those entries only. A push to main, a manual
+# run and the publish workflow check every entry online.
 
 on:
   pull_request:
   push:
     branches: [main]
+  workflow_dispatch:
   workflow_call:
 
 permissions:
@@ -18,10 +25,34 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - run: node --test scripts/validate.test.mjs
-      - run: node scripts/validate.mjs --online
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - run: node --test scripts/*.test.mjs
+      - run: node scripts/build.mjs --check
+      - name: One pull request, which entries
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          node scripts/pr-policy.mjs "$BASE_SHA" "$HEAD_SHA" > "$RUNNER_TEMP/changed-entries"
+          cat "$RUNNER_TEMP/changed-entries"
+      - name: The changed entries against their official sources
+        if: github.event_name == 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
+        run: |
+          mapfile -t changed < "$RUNNER_TEMP/changed-entries"
+          args=()
+          for f in "${changed[@]}"; do args+=(--entry "$f"); done
+          echo "${#changed[@]} changed entr(y/ies)"
+          node scripts/validate.mjs --online "${args[@]}"
+      - name: Every entry against its official source
+        if: github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/validate.mjs --online
 
   apt-packages:
     strategy:
@@ -31,5 +62,7 @@ jobs:
     container: ${{ matrix.image }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - run: apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq nodejs >/dev/null
       - run: node scripts/validate.mjs --apt

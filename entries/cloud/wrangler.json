@@ -1,0 +1,41 @@
+{
+  "id": "wrangler",
+  "name": "Cloudflare Wrangler",
+  "category": "cloud",
+  "summary": "Build and deploy Cloudflare Workers and Pages.",
+  "publisher": {
+    "name": "Cloudflare",
+    "url": "https://www.cloudflare.com"
+  },
+  "homepage": "https://developers.cloudflare.com/workers/wrangler/",
+  "license": "MIT OR Apache-2.0",
+  "keywords": [
+    "cloudflare",
+    "wrangler",
+    "workers",
+    "pages",
+    "deploy"
+  ],
+  "detect": {
+    "command": "wrangler",
+    "version": [
+      "wrangler",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "driver": "npm-global",
+      "account": "user",
+      "package": "wrangler",
+      "env": {
+        "WRANGLER_SEND_METRICS": "false"
+      }
+    }
+  },
+  "dependsOn": [
+    "nodejs"
+  ],
+  "signIn": "later",
+  "updates": "driver"
+}

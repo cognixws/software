@@ -1,0 +1,41 @@
+{
+  "id": "python-pip",
+  "name": "Python pip and venv",
+  "category": "packages",
+  "summary": "Installs Python packages and makes virtual environments for the system Python.",
+  "publisher": {
+    "name": "Python Packaging Authority",
+    "url": "https://www.pypa.io"
+  },
+  "homepage": "https://pip.pypa.io",
+  "license": "MIT",
+  "keywords": [
+    "python",
+    "python3",
+    "pip",
+    "venv",
+    "packages"
+  ],
+  "detect": {
+    "command": "pip3",
+    "version": [
+      "pip3",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "families": [
+        "apt"
+      ],
+      "driver": "apt",
+      "account": "root",
+      "packages": [
+        "python3-pip",
+        "python3-venv"
+      ]
+    }
+  },
+  "signIn": "none",
+  "updates": "driver"
+}

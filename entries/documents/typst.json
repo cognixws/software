@@ -1,0 +1,76 @@
+{
+  "id": "typst",
+  "name": "Typst",
+  "category": "documents",
+  "summary": "Typesets reports and proposals written as plain text into PDF, in milliseconds.",
+  "publisher": {
+    "name": "Typst",
+    "url": "https://typst.app"
+  },
+  "homepage": "https://typst.app",
+  "license": "Apache-2.0",
+  "keywords": [
+    "pdf",
+    "typesetting",
+    "report",
+    "latex",
+    "document"
+  ],
+  "detect": {
+    "command": "typst",
+    "version": [
+      "typst",
+      "--version"
+    ]
+  },
+  "platforms": {
+    "wsl": {
+      "driver": "github-release",
+      "account": "user",
+      "hosts": [
+        "github.com",
+        "objects.githubusercontent.com",
+        "release-assets.githubusercontent.com"
+      ],
+      "release": {
+        "repo": "typst/typst",
+        "asset": "typst-{target}.tar.xz",
+        "binary": "typst",
+        "version": "0.15.1",
+        "path": "typst-{target}/typst",
+        "targets": {
+          "amd64": "x86_64-unknown-linux-musl",
+          "arm64": "aarch64-unknown-linux-musl"
+        },
+        "sha256": {
+          "amd64": "a6d077d0a95eed5a2eba715b2dae06be954f624ccbf85758a03f389ded33118c",
+          "arm64": "5aa8d74a3d906e60ea12a66ac2f37f8eef1b14cbad7182a745e393a10c23dcee"
+        }
+      }
+    },
+    "windows": {
+      "driver": "winget",
+      "id": "Typst.Typst",
+      "scope": "user"
+    }
+  },
+  "signIn": "none",
+  "updates": "driver",
+  "tier": "official",
+  "updatedAt": "2026-11-26",
+  "agent": {
+    "summary": "Writes a PDF from a .typ file an agent generates: headings, tables and numbers laid out with fonts it carries.",
+    "commands": [
+      "typst compile report.typ report.pdf",
+      "typst compile report.typ page-{p}.png",
+      "typst fonts"
+    ],
+    "formats": [
+      ".typ",
+      ".pdf",
+      ".svg",
+      ".png"
+    ],
+    "caveats": "Typst's own markup, not LaTeX or Markdown. Images and data files a document reads must sit under the folder it compiles from."
+  }
+}

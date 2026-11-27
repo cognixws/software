@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-// Validates catalog.json: the schema COGNIX[WS] enforces (internal/software
+// Validates the registry tree (entries/<area>/<id>.json, bundles/<id>.json,
+// D5a) as the one catalog it assembles into: the schema COGNIX[WS] enforces (internal/software
 // in the app, ADR-0407 and ADR-0409), ids, HTTPS URLs, download hosts and
 // pinned fingerprints. With --online it also checks each entry against its
 // official source: the npm package and its repository, the vendor's script,
@@ -7,17 +8,23 @@
 // --apt it checks that every apt package exists on this machine's
 // distribution (CI runs it on Ubuntu 24.04 and Debian 12).
 //
-// No dependencies. Run: node scripts/validate.mjs [--online] [--apt]
+// --entry entries/<area>/<id>.json (repeatable) limits --online to those
+// entries: what a single-entry pull request needs, the rest being checked
+// offline. No dependencies.
+// Run: node scripts/validate.mjs [--online] [--apt] [--entry FILE]...
 
-import { readFileSync, writeFileSync, mkdtempSync, rmSync } from "node:fs";
+import { writeFileSync, mkdtempSync, rmSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
+import { readTree, placementProblems, assemble } from "./tree.mjs";
+import { categories } from "./categories.mjs";
 
-const root = join(dirname(fileURLToPath(import.meta.url)), "..");
-const args = new Set(process.argv.slice(2));
+const argv = process.argv.slice(2);
+const args = new Set(argv);
+const only = argv.flatMap((a, i) => (a === "--entry" ? [argv[i + 1]] : []));
 const online = args.has("--online");
 const aptCheck = args.has("--apt");
 const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || "";
@@ -26,7 +33,7 @@ const notes = [];
 const fail = (m) => problems.push(m);
 
 // ── the schema (mirror of internal/software/catalog.go) ───────────────────
-export const categories = ["agent-clis", "documents", "data", "git", "containers", "cloud", "networking", "dev-tools", "packages", "runtime", "media"];
+export { categories };
 const drivers = {
   cli: "user", "npm-global": "user", "github-release": "user", "vendor-script": "user",
   apt: "root", "apt-repo": "root", setup: "user", "node-dist": "user", "uv-tool": "user", winget: "windows",
@@ -312,11 +319,11 @@ export function validateEntry(e) {
 
 export function validateCatalog(doc) {
   const out = [];
-  if (typeof doc !== "object" || doc === null || Array.isArray(doc)) return ["catalog.json must be an object"];
-  for (const k of Object.keys(doc)) if (!["version", "entries", "bundles"].includes(k)) out.push(`catalog.json: unknown field "${k}" (the serial is stamped when it is signed)`);
-  if (doc.version !== 1) out.push("catalog.json: version must be 1");
-  if (!Array.isArray(doc.entries) || doc.entries.length === 0) return [...out, "catalog.json: entries must be a non-empty list"];
-  if (doc.entries.length > 500) out.push(`catalog.json holds ${doc.entries.length} entries; the cap is 500`);
+  if (typeof doc !== "object" || doc === null || Array.isArray(doc)) return ["the catalog must be an object"];
+  for (const k of Object.keys(doc)) if (!["version", "entries", "bundles"].includes(k)) out.push(`catalog: unknown field "${k}" (the serial is stamped when it is signed)`);
+  if (doc.version !== 1) out.push("catalog: version must be 1");
+  if (!Array.isArray(doc.entries) || doc.entries.length === 0) return [...out, "catalog: entries must be a non-empty list"];
+  if (doc.entries.length > 500) out.push(`the catalog holds ${doc.entries.length} entries; the cap is 500`);
   const ids = new Set();
   for (const [i, e] of doc.entries.entries()) {
     const at = `entries[${i}] (${e?.id ?? "?"})`;
@@ -340,7 +347,7 @@ export function validateCatalog(doc) {
 }
 
 // ── the official source of each entry (network) ──────────────────────────
-async function get(url, { json = false, limit = 4 << 20, headers = {} } = {}) {
+export async function get(url, { json = false, limit = 4 << 20, headers = {} } = {}) {
   const res = await fetch(url, { redirect: "follow", headers: { "User-Agent": "cognixws-software-validate", ...headers } });
   if (!res.url.startsWith("https://")) throw new Error(`${url} redirected off HTTPS`);
   if (!res.ok) throw new Error(`GET ${url} → ${res.status}`);
@@ -348,7 +355,7 @@ async function get(url, { json = false, limit = 4 << 20, headers = {} } = {}) {
   if (buf.length > limit) throw new Error(`${url} is larger than ${limit} bytes`);
   return json ? JSON.parse(buf.toString("utf8")) : buf;
 }
-const ghHeaders = () => (token ? { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" } : { Accept: "application/vnd.github+json" });
+export const ghHeaders = () => (token ? { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json" } : { Accept: "application/vnd.github+json" });
 
 // A pinned release (schema v2): the asset of that tag's release, per pinned
 // architecture, must hash to the catalog's sha256 (downloaded whole, 256 MiB
@@ -356,7 +363,7 @@ const ghHeaders = () => (token ? { Authorization: `Bearer ${token}`, Accept: "ap
 // same hash.
 // The driver refuses a redirect to a host the entry does not name
 // (release.go): so does this, hop by hop.
-async function getOnHosts(url, hosts, limit) {
+export async function getOnHosts(url, hosts, limit) {
   for (let hop = 0; hop < 5; hop++) {
     const u = new URL(url);
     if (u.protocol !== "https:" || !(hosts || []).includes(u.host)) throw new Error(`${url} is on a host the entry does not name`);
@@ -477,16 +484,14 @@ function checkApt(e) {
 
 // ── run ───────────────────────────────────────────────────────────────────
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  let doc;
-  try {
-    doc = JSON.parse(readFileSync(join(root, "catalog.json"), "utf8"));
-  } catch (err) {
-    console.error(`catalog.json is not valid JSON: ${err.message}`);
-    process.exit(1);
-  }
-  problems.push(...validateCatalog(doc));
+  const { files, problems: treeProblems } = readTree();
+  const doc = assemble(files);
+  problems.push(...treeProblems, ...placementProblems(files), ...validateCatalog(doc));
+  const ofFile = new Map(files.filter((f) => f.kind === "entry").map((f) => [f.doc.id, f.path]));
+  for (const p of only) if (!files.some((f) => f.path === p && f.kind === "entry")) fail(`--entry ${p}: no such entry in the tree`);
   if (!problems.length && online) {
     for (const e of doc.entries) {
+      if (only.length && !only.includes(ofFile.get(e.id))) continue;
       try {
         await checkSource(e);
       } catch (err) {
@@ -496,7 +501,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   }
   if (!problems.length && aptCheck) for (const e of doc.entries) checkApt(e);
   for (const n of notes) console.log(`  ${n}`);
-  console.log(`catalog: ${doc.entries?.length ?? 0} entries${online ? ", sources checked" : ""}${aptCheck ? ", apt packages checked" : ""}`);
+  console.log(`catalog: ${doc.entries?.length ?? 0} entries${online ? (only.length ? `, sources of ${only.length} checked` : ", sources checked") : ""}${aptCheck ? ", apt packages checked" : ""}`);
   if (problems.length) {
     console.error(`\n${problems.length} problem(s):`);
     for (const p of problems) console.error(`  - ${p}`);
